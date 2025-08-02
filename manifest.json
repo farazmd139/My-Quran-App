@@ -1,38 +1,32 @@
 {
-  "name": "القرآن الكريم - Faraz AI",
-  "short_name": "Quran AI",
-  "description": "Read and listen to the Holy Quran with Faraz AI, your personal Islamic assistant.",
-  "start_url": "/",  
-  "id": "com.faraz.quranapp", 
-  "display": "standalone",
-  "background_color": "#0d121a",
-  "theme_color": "#161b22",
-  "orientation": "any",
-  "dir": "rtl",
-  "lang": "ur",
-  "icons": [
-    {
-      "src": "android-launchericon-192-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "android-launchericon-512-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "android-launchericon-512-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "categories": [
-    "books",
-    "education",
-    "lifestyle"
-  ]
+    "name": "القرآن الكريم - Faraz AI",
+    "short_name": "Quran AI",
+    "description": "Read and listen to the Holy Quran with Faraz AI, your personal Islamic assistant.",
+    "start_url": "/",
+    "id": "com.faraz.quranapp",
+    "display": "standalone",
+    "background_color": "#0d121a",
+    "theme_color": "#161b22",
+    "orientation": "any",
+    "dir": "rtl",
+    "lang": "ur",
+    "icons": [
+        {
+            "src": "android-launchericon-192-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "android-launchericon-512-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "books",
+        "education",
+        "lifestyle"
+    ]
 }

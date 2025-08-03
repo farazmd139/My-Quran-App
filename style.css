@@ -25,8 +25,16 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 .header-title { font-family: 'Noto Nastaliq Urdu'; font-size: 1.5rem; color: white; }
-.menu-button { background: none; border: none; color: white; cursor: pointer; padding: 5px; }
-.menu-button .material-symbols-outlined { font-size: 28px; }
+.menu-button-floating {
+    position: fixed; top: 15px; right: 15px; z-index: 1002;
+    background-color: rgba(44, 62, 80, 0.5);
+    border: none; border-radius: 50%;
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+}
+.menu-button-floating:hover { background-color: rgba(44, 62, 80, 0.9); transform: rotate(90deg); }
 .side-menu {
     position: fixed; top: 0; right: -280px; width: 250px; height: 100%;
     background-color: #1e2732; z-index: 2002; padding-top: 80px;
@@ -57,15 +65,15 @@ body {
 .nav-button.active { color: var(--highlight-glow); }
 .nav-button .material-symbols-outlined { font-size: 28px; }
 .nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
-.ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
-.ai-icon-container::before {
+
+/* --- AI Chat Icon & Page --- */
+#ai-nav-button .ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
+#ai-nav-button .ai-icon-container::before {
     content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%;
     background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
     animation: liquid-flow 4s linear infinite;
 }
 @keyframes liquid-flow { from { transform: translateX(0%); } to { transform: translateX(-66.66%); } }
-
-/* --- AI Chat --- */
 #aiPage { height: calc(100vh - 145px); padding-top: 0; }
 .chat-container { width: 100%; height: 100%; background-color: transparent; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; overflow: hidden; border: none; }
 .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; direction: rtl; display: flex; flex-direction: column; gap: 15px; }
@@ -73,8 +81,8 @@ body {
 .user-message { background-color: #2a3b47; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 5px; }
 .ai-message { background-color: #323d49; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 5px; }
 .chat-input-area { display: flex; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); background-color: var(--chat-header-bg); }
-#chat-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; font-size: 1rem; background-color: #323d49; color: white; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: rtl; }
-#send-chat-button { width: 50px; height: 50px; margin-right: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#chat-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; font-size: 1rem; background-color: #323d49; color: white; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: ltr; }
+#send-chat-button { width: 50px; height: 50px; margin-left: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 /* --- Quran & Surah Pages --- */
 #quranPage { padding: 0; }
@@ -130,7 +138,7 @@ body {
 #dua-categories { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; }
 .category-button { background-color: #323d49; border: 1px solid transparent; border-radius: 20px; padding: 8px 15px; color: var(--text-primary); cursor: pointer; font-family: 'Noto Nastaliq Urdu'; }
 .category-button.active { background-color: var(--highlight-glow); color: black; font-weight: bold; }
-#dua-list, #names-container { overflow-y: auto; padding-right: 10px; max-height: calc(100vh - 260px); }
+#dua-list, #names-container { overflow-y: auto; padding: 5px; max-height: calc(100vh - 260px); }
 .dua-card, .name-card { background-color: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
 .dua-arabic, .name-arabic { font-family: 'Amiri', serif; font-size: 2rem; font-weight: 700; color: var(--highlight-glow); text-shadow: 0 0 8px var(--highlight-glow), 0 0 20px rgba(243, 156, 18, 0.5); margin: 0; text-align: right; line-height: 2; }
 .dua-translation, .name-translation { font-family: 'Noto Nastaliq Urdu', sans-serif; font-size: 1rem; text-align: right; color: #ccc; margin-top: 10px; }
@@ -146,3 +154,4 @@ body {
 .credits-section { overflow-y: auto; text-align: center; }
 .credits-section p { text-align: right; }
 .coming-soon-container { text-align: center; padding-top: 50px; opacity: 0.7; }
+.coming-soon-container .material-symbols-outlined { font-size: 5rem; color: var(--highlight-glow); opacity: 0.5; }

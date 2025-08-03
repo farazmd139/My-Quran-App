@@ -1,31 +1,45 @@
-// Your API Key
+// --- Global Variables & API Key ---
 const GEMINI_API_KEY = 'AIzaSyDB4TUj3zsU90jCfI8L0yivvWIYipUtq3c';
 
 // --- DOM Elements ---
 const pages = document.querySelectorAll('.page');
+const navButtons = document.querySelectorAll('.nav-button');
 const surahList = document.getElementById('surah-list');
 const surahHeader = document.getElementById('surahHeader');
 const surahContainer = document.getElementById('surahContainer');
 const mainAudioPlayer = document.getElementById('mainAudioPlayer');
 
-// --- Page Navigation ---
+// --- Navigation Logic ---
+navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const pageId = button.dataset.page;
+        showPage(pageId);
+        
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    });
+});
+
 function showPage(pageId) {
-    pages.forEach(page => page.classList.remove('active'));
-    const newPage = document.getElementById(pageId);
-    if (newPage) {
-        newPage.classList.add('active');
+    pages.forEach(page => {
+        page.classList.remove('active');
+    });
+    const activePage = document.getElementById(pageId);
+    if(activePage) {
+        activePage.classList.add('active');
     }
-    if (pageId === 'homePage') {
+    
+    // Stop audio if navigating away from surah detail page
+    if(pageId !== 'surahDetailPage') {
         mainAudioPlayer.pause();
         mainAudioPlayer.src = '';
     }
 }
 
-// --- Fetch and Display Surah List ---
+// --- Quran Functionality ---
 async function fetchSurahList() {
     try {
         const response = await fetch('https://api.quran.com/api/v4/chapters');
-        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         displaySurahs(data.chapters);
     } catch (error) {
@@ -55,9 +69,8 @@ function displaySurahs(surahs) {
     });
 }
 
-// --- Load and Display a Single Surah ---
 async function loadSurah(surahId) {
-    showPage('surahPage');
+    showPage('surahDetailPage');
     surahHeader.innerHTML = '<h1>لوڈ ہو رہا ہے...</h1>';
     surahContainer.innerHTML = '';
     
@@ -68,19 +81,15 @@ async function loadSurah(surahId) {
             fetch(`https://api.quran.com/api/v4/chapter_recitations/7/${surahId}`)
         ]);
 
-        if (!versesRes.ok || !infoRes.ok || !audioRes.ok) throw new Error('Failed to fetch surah data');
-
         const versesData = await versesRes.json();
         const infoData = await infoRes.json();
         const audioData = await audioRes.json();
 
         const surahInfo = infoData.chapter;
-        surahHeader.innerHTML = `
-            ${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}
-            <h1>${surahInfo.name_arabic}</h1>
-        `;
+        surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}<h1>${surahInfo.name_arabic}</h1>`;
         
         mainAudioPlayer.src = audioData.audio_file.audio_url;
+        mainAudioPlayer.play().catch(e => console.log("Audio autoplay was prevented."));
 
         versesData.verses.forEach((ayah, index) => {
             const box = document.createElement('div');
@@ -96,16 +105,14 @@ async function loadSurah(surahId) {
     }
 }
 
-// --- AI Chat ---
-const chatButton = document.getElementById('ai-chat-button');
+// --- AI Chat Functionality ---
 const chatModal = document.getElementById('ai-chat-modal');
 const closeChatButton = document.getElementById('close-chat-button');
 const chatMessages = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const sendChatButton = document.getElementById('send-chat-button');
 
-chatButton.addEventListener('click', () => openModal('ai-chat-modal'));
-closeChatButton.addEventListener('click', () => closeModal('ai-chat-modal'));
+// Event listeners for chat
 chatInput.addEventListener('keypress', (event) => { if (event.key === 'Enter') sendMessage(); });
 sendChatButton.addEventListener('click', sendMessage);
 
@@ -136,7 +143,7 @@ async function askGoogleAI(question) {
     const requestData = {
         contents: [{
             parts: [{
-                text: `You are "Faraz," a learned Islamic scholar AI assistant. Your knowledge is based on the Quran, Tafsir (like Ibn Kathir, At-Tabari), and authentic Hadith collections (Sahih al-Bukhari, Sahih Muslim, Jami' at-Tirmidhi, etc.). When a user asks a question, provide a detailed, accurate, and respectful answer in the same language they used (Urdu, Hindi, or English). If possible, cite your sources (e.g., Quran 2:183, Sahih al-Bukhari 5678). Be comprehensive but easy to understand. User's question: "${question}"`
+                text: `You are "Faraz," a learned Islamic scholar AI assistant. Your knowledge is based on the Quran, Tafsir, and authentic Hadith. When a user asks a question, provide a detailed, accurate, and respectful answer in the same language they used (Urdu, Hindi, or English). If possible, cite your sources. Be comprehensive but easy to understand. User's question: "${question}"`
             }]
         }]
     };
@@ -158,62 +165,7 @@ async function askGoogleAI(question) {
     }
 }
 
-// --- Modal Control & Extra Features ---
-const settingsIcon = document.getElementById('settings-icon');
-const aiTutorButton = document.getElementById('ai-tutor-button');
-const rateAppLink = document.getElementById('rate-app-link');
-const shareAppLink = document.getElementById('share-app-link');
-
-function openModal(modalId) {
-    closeAllModals();
-    const modal = document.getElementById(modalId);
-    if(modal) modal.style.display = 'flex';
-}
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) modal.style.display = 'none';
-}
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
-}
-
-settingsIcon.addEventListener('click', () => openModal('settings-modal'));
-aiTutorButton.addEventListener('click', () => openModal('coming-soon-modal'));
-window.addEventListener('click', (event) => { if (event.target.classList.contains('modal')) { closeAllModals(); } });
-
-shareAppLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    const shareData = {
-        title: 'القرآن الكريم - Faraz AI',
-        text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!',
-        url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp'
-    };
-    if (navigator.share) {
-        navigator.share(shareData).catch(console.error);
-    } else {
-        alert(shareData.text + "\n" + shareData.url);
-    }
-});
-
-rateAppLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank');
-});
 
 // --- Initial Load ---
-document.addEventListener('DOMContentLoaded', () => {
-    fetchSurahList();
-});
-
-// --- Service Worker Registration ---
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
-}
+fetchSurahList();
+showPage('quranPage'); // Start on the Quran page

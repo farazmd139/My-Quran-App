@@ -24,7 +24,6 @@ const duaCategoriesContainer = document.getElementById('dua-categories');
 const duaListContainer = document.getElementById('dua-list');
 const namesContainer = document.getElementById('names-container');
 const showNamesBtn = document.getElementById('show-names-btn');
-const showNamesBtnMore = document.getElementById('show-names-btn-more');
 const prayerTimeContainer = document.getElementById('prayer-times-container');
 const dailyAyahContainer = document.getElementById('daily-ayah-container');
 const prayerTimeLoader = document.getElementById('prayer-time-loader');
@@ -50,7 +49,6 @@ function showPage(pageId) {
             homeCustomPage: "ہوم",
             tasbihPage: "ڈیجیٹل تسبیح",
             duaPage: "دعائیں اور اذکار",
-            morePage: "مزید",
             surahDetailPage: "القرآن الكريم"
         };
         headerTitle.textContent = pageTitles[pageId] || "القرآن الكريم";
@@ -77,7 +75,7 @@ async function fetchSurahList() {
         const data = await response.json();
         displaySurahs(data.chapters);
     } catch (error) {
-        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی।</p>';
+        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی۔</p>';
     }
 }
 
@@ -228,6 +226,7 @@ resetButton.addEventListener('click', () => {
 });
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
+// This is the largest part of the code, containing all your data.
 let allContent = [];
 const namesData = [
     {"name": "الرحمن", "transliteration": "Ar-Rahman", "ur_meaning": "بہت مہربان"},
@@ -331,7 +330,7 @@ const namesData = [
     {"name": "الصبور", "transliteration": "As-Sabur", "ur_meaning": "صبر کرنے والا"}
 ];
 
-async function loadContentData() {
+function loadContentData() {
     allContent = [
         // 6 Kalmas
         { category: "کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔" },
@@ -440,6 +439,7 @@ async function loadContentData() {
     displayDuaCategories(categories);
     filterContent(categories[0]);
 }
+
 function displayDuaCategories(categories) {
     duaCategoriesContainer.innerHTML = '';
     categories.forEach(category => {
@@ -453,8 +453,11 @@ function displayDuaCategories(categories) {
         });
         duaCategoriesContainer.appendChild(button);
     });
-    duaCategoriesContainer.firstChild.classList.add('active');
+    if (duaCategoriesContainer.firstChild) {
+        duaCategoriesContainer.firstChild.classList.add('active');
+    }
 }
+
 function filterContent(category) {
     const items = allContent.filter(item => item.category === category);
     duaListContainer.innerHTML = '';
@@ -465,6 +468,7 @@ function filterContent(category) {
         duaListContainer.appendChild(card);
     });
 }
+
 function displayNames(names) {
     namesContainer.innerHTML = '';
     names.forEach(name => {
@@ -474,8 +478,9 @@ function displayNames(names) {
         namesContainer.appendChild(nameCard);
     });
 }
+
 showNamesBtn.addEventListener('click', () => openModal('names-modal'));
-document.getElementById('show-names-btn-more').addEventListener('click', () => openModal('names-modal'));
+showNamesBtnMore.addEventListener('click', () => openModal('names-modal'));
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -487,8 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
         navigator.geolocation.getCurrentPosition(position => {
             getPrayerTimes(position.coords.latitude, position.coords.longitude);
         }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
-    } else {
-        prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
     }
     showRandomAyah();
     setInterval(showRandomAyah, 600000);

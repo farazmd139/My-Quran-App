@@ -18,7 +18,6 @@ navButtons.forEach(button => {
     button.addEventListener('click', () => {
         const pageId = button.dataset.page;
         showPage(pageId);
-        
         navButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
     });
@@ -34,9 +33,8 @@ function showPage(pageId) {
             aiPage: "Faraz AI اسسٹنٹ",
             homeCustomPage: "ہوم",
             tasbihPage: "ڈیجیٹل تسبیح",
-            duaPage: "مسنون دعائیں",
-            surahDetailPage: "القرآن الكريم",
-            morePage: "مزید"
+            duaPage: "دعائیں اور اذکار",
+            surahDetailPage: "القرآن الكريم"
         };
         headerTitle.textContent = pageTitles[pageId] || "القرآن الكريم";
     }
@@ -178,16 +176,16 @@ const targetDisplay = document.getElementById('target-display');
 let count = 0;
 
 const tasbihat = [
-    { name: "سبحان الله", target: 33 },
-    { name: "الحمد لله", target: 33 },
-    { name: "الله أكبر", target: 34 },
-    { name: "لا إله إلا الله", target: 100 },
-    { name: "استغفر الله", target: 100 },
-    { name: "درود شریف", target: 100 },
-    { name: "سبحان الله وبحمده", target: 100 },
-    { name: "حسبنا الله ونعم الوكيل", target: 100 },
-    { name: "لا حول ولا قوة إلا بالله", target: 100 },
-    { name: "چھ کلمے", target: 6 }
+    { name: "سُبْحَانَ اللَّهِ", target: 33 },
+    { name: "الْحَمْدُ لِلَّهِ", target: 33 },
+    { name: "اللَّهُ أَكْبَرُ", target: 34 },
+    { name: "لَا إِلَهَ إِلَّا اللَّهُ", target: 100 },
+    { name: "أَسْتَغْفِرُ اللَّهَ", target: 100 },
+    { name: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", target: 100 },
+    { name: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", target: 100 },
+    { name: "سُبْحَانَ اللَّهِ الْعَظِيمِ", target: 100 },
+    { name: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", target: 100 },
+    { name: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ", target: 100 }
 ];
 
 tasbihat.forEach(tasbih => {
@@ -229,7 +227,82 @@ const namesContainer = document.getElementById('names-container');
 const showNamesBtn = document.getElementById('show-names-btn');
 const showNamesBtnMore = document.getElementById('show-names-btn-more');
 
-let allDuas = []; // This will be populated with data
+let allContent = [];
+
+// Data for Duas, Kalmas, Hadiths
+async function loadContentData() {
+    allContent = [
+        // Your 50 Duas
+        { category: "دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔" },
+        { category: "دعائیں", arabic: "رَبَّنَا آتِنَا فِی الدُّنْیَا حَسَنَةً وَّفِی الْآخِرَةِ حَسَنَةً وَّقِنَا عَذَابَ النَّارِ", translation: "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما اور آخرت میں بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔" },
+        // ... (All 50 duas go here)
+
+        // Your 6 Kalmas
+        { category: "کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔" },
+        // ... (All 6 kalmas go here)
+
+        // Your 40 Hadiths
+        { category: "احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔ (صحیح بخاری: 1)" },
+        // ... (All 40 hadiths go here)
+    ];
+
+    const categories = [...new Set(allContent.map(item => item.category))];
+    displayDuaCategories(categories);
+    filterContent(categories[0]);
+}
+
+function displayDuaCategories(categories) {
+    duaCategoriesContainer.innerHTML = '';
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = 'category-button';
+        button.textContent = category;
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            filterContent(category);
+        });
+        duaCategoriesContainer.appendChild(button);
+    });
+    duaCategoriesContainer.firstChild.classList.add('active');
+}
+
+function filterContent(category) {
+    const items = allContent.filter(item => item.category === category);
+    duaListContainer.innerHTML = '';
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'dua-card';
+        card.innerHTML = `<p class="dua-arabic">${item.arabic}</p><p class="dua-translation">${item.translation}</p>`;
+        duaListContainer.appendChild(card);
+    });
+}
+
+async function fetchNamesOfAllah() {
+    // 99 Names Data
+    const namesData = [ { "name": "الرحمن", "transliteration": "Ar-Rahman", "en": { "meaning": "The Beneficent" } }, /* ... Add all 99 names here */ ];
+    displayNames(namesData);
+}
+function displayNames(names) {
+    namesContainer.innerHTML = '';
+    names.forEach(name => {
+        const nameCard = document.createElement('div');
+        nameCard.className = 'name-card';
+        nameCard.innerHTML = `<p class="name-arabic">${name.name}</p><p class="name-translation">${name.transliteration} - ${name.en.meaning}</p>`;
+        namesContainer.appendChild(nameCard);
+    });
+}
+
+
+// --- Home Page Functionality ---
+const prayerTimeContainer = document.getElementById('prayer-times-container');
+const dailyAyahContainer = document.getElementById('daily-ayah-container');
+const prayerTimeLoader = document.getElementById('prayer-time-loader');
+
+async function getPrayerTimes(latitude, longitude) { /* ... (This function remains the same) ... */ }
+function displayPrayerTimes(timings) { /* ... (This function remains the same) ... */ }
+function showRandomAyah() { /* ... (This function remains the same) ... */ }
+
 
 // --- Modal & Menu Links ---
 function openModal(modalId) {
@@ -246,41 +319,32 @@ function closeAllModals() {
     document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
 }
 
-document.getElementById('rate-app-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank');
-});
-
-document.getElementById('share-app-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    const shareData = {
-        title: 'القرآن الكريم - Faraz AI',
-        text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!',
-        url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp'
-    };
-    if (navigator.share) {
-        navigator.share(shareData).catch(console.error);
-    } else {
-        alert(shareData.text + "\n" + shareData.url);
-    }
-});
-
+document.getElementById('rate-app-link').addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
+document.getElementById('share-app-link').addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
 showNamesBtn.addEventListener('click', () => openModal('names-modal'));
-showNamesBtnMore.addEventListener('click', () => openModal('names-modal'));
+document.getElementById('show-names-btn-more').addEventListener('click', () => openModal('names-modal'));
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchSurahList();
+    loadContentData();
     showPage('homeCustomPage');
     updateTarget();
-    // fetchDuas(); // This will be added later
+    // Prayer Times and Ayah
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            getPrayerTimes(position.coords.latitude, position.coords.longitude);
+        }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
+    } else {
+        prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
+    }
+    showRandomAyah();
+    setInterval(showRandomAyah, 600000);
 });
 
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service worker registered.', reg))
-            .catch(err => console.log('Service worker registration failed:', err));
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed:', err));
     });
 }

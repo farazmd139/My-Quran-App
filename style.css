@@ -1,14 +1,19 @@
 :root {
-    --glow-color1: #0ebeff; --glow-color2: #ffdd40; --highlight-glow: #f39c12;
-    --chat-bg: transparent; --chat-header-bg: #161b22; --nav-bg: #161b22;
-    --text-primary: #ecf0f1; --text-secondary: #888;
+    --glow-color1: #0ebeff; --glow-color2: #ffdd40;
+    --highlight-glow: #f39c12;
+    --chat-bg: transparent;
+    --chat-header-bg: #161b22;
+    --nav-bg: #161b22;
+    --text-primary: #ecf0f1;
+    --text-secondary: #888;
 }
 html { scroll-behavior: smooth; }
 body {
     font-family: 'Amiri', serif; background-color: #0d121a;
     background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
     background-size: 25px 25px;
-    margin: 0; padding: 0; direction: rtl; overflow-x: hidden; color: var(--text-primary);
+    margin: 0; padding: 0; direction: rtl; overflow-x: hidden;
+    color: var(--text-primary);
 }
 .main-content { padding: 80px 20px 85px 20px; }
 .page { display: none; animation: pageFadeIn 0.5s ease; }
@@ -54,8 +59,6 @@ body {
 .nav-button.active { color: var(--highlight-glow); }
 .nav-button .material-symbols-outlined { font-size: 28px; }
 .nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
-
-/* AI Icon */
 .ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
 .ai-icon-container::before {
     content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%;
@@ -98,11 +101,8 @@ body {
 #chat-input:focus { outline: none; border-color: var(--glow-color1); }
 #send-chat-button { width: 50px; height: 50px; margin-right: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-/* --- More Page & Modals --- */
-.settings-list { list-style: none; padding: 0; margin: 20px 0; }
-.settings-list li { background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; font-size: 1.3rem; cursor: pointer; transition: background-color 0.3s; }
-.settings-list li:hover { background-color: rgba(255,255,255,0.1); }
-.settings-list li .material-symbols-outlined { margin-left: 15px; font-size: 1.8rem; color: var(--glow-color2); }
+/* --- Coming Soon & Modals --- */
+.coming-soon-container { text-align: center; padding-top: 50px; }
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
 .modal-content { background-color: var(--chat-bg); border: 1px solid rgba(255, 255, 255, 0.2); padding: 25px 30px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; position: relative; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: rtl; max-height: 80vh; display: flex; flex-direction: column; }
 .close-button { color: #aaa; position: absolute; top: 10px; left: 20px; font-size: 32px; font-weight: bold; cursor: pointer; }
@@ -111,4 +111,69 @@ body {
 .modal-content a { color: var(--glow-color1); text-decoration: none; }
 .credits-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); text-align: right;}
 .credits-section p { margin: 8px 0; text-align: right; }
-.coming-soon-container { text-align: center; padding: 50px 20px; }
+
+/* --- Tasbih Page --- */
+#tasbihPage { display: none; /* Temporarily hide until active */ }
+.tasbih-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 160px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+.tasbih-counter-ring {
+    width: 150px;
+    height: 150px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.5);
+}
+.tasbih-counter {
+    font-family: 'Arial', sans-serif;
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--highlight-glow);
+    text-shadow: 0 0 10px var(--highlight-glow);
+}
+.tasbih-bead-wrapper {
+    perspective: 800px;
+}
+.tasbih-bead {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffd54f, #ff8f00);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6), inset 0 -10px 20px rgba(0,0,0,0.4), inset 0 5px 15px rgba(255, 255, 255, 0.3);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transform-style: preserve-3d;
+}
+.tasbih-bead:active {
+    transform: scale(0.95) rotateX(15deg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.7), inset 0 -5px 15px rgba(0,0,0,0.5), inset 0 3px 10px rgba(255, 255, 255, 0.3);
+}
+.reset-button {
+    margin-top: 50px;
+    background: none;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, border-color 0.2s;
+}
+.reset-button:hover {
+    color: white;
+    border-color: white;
+}

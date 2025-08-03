@@ -1,12 +1,14 @@
 // Service Worker Code
-const CACHE_NAME = 'quran-app-cache-v2';
+const CACHE_NAME = 'quran-app-cache-v3'; // Version updated
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
+  '/manifest.json',
   '/favicon.png',
-  '/manifest.json'
+  '/android-launchericon-192-192.png',
+  '/android-launchericon-512-512.png'
 ];
 
 self.addEventListener('install', event => {

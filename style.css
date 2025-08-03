@@ -1,31 +1,64 @@
 :root {
     --glow-color1: #0ebeff; --glow-color2: #ffdd40;
-    --glow-color3: #ff4971; --glow-color4: #25d366;
     --highlight-glow: #f39c12;
     --chat-bg: #1e2732;
     --chat-header-bg: #161b22;
 }
-
 html { scroll-behavior: smooth; }
 body {
     font-family: 'Amiri', serif; background-color: #0d121a;
     background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
-    background-size: 25px 25px; animation: background-pan 50s linear infinite;
+    background-size: 25px 25px;
     margin: 0; padding: 20px; direction: rtl; overflow-x: hidden;
     color: #ecf0f1;
-    position: relative; min-height: 100vh;
-    box-sizing: border-box;
+    padding-bottom: 80px; /* Make space for nav bar */
 }
-@keyframes background-pan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
 
+/* --- Page Structure --- */
 .page { display: none; animation: pageFadeIn 0.5s ease; }
 .page.active { display: block; }
-@keyframes pageFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* --- Homescreen --- */
+/* --- Bottom Navigation Bar --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background-color: var(--chat-header-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+.nav-button {
+    background: none;
+    border: none;
+    color: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.nav-button.active {
+    color: var(--highlight-glow);
+}
+.nav-button .material-symbols-outlined {
+    font-size: 28px;
+}
+.nav-label {
+    font-size: 0.7rem;
+    margin-top: 2px;
+    font-family: Arial, sans-serif;
+}
+
+/* --- Quran Page --- */
 .home-header { text-align: center; margin-bottom: 30px; }
 .home-header h1 { font-size: 3.5rem; color: var(--highlight-glow); text-shadow: 0 0 10px var(--highlight-glow); margin: 0; font-family: 'Noto Nastaliq Urdu'; }
-.home-header p { font-size: 1.2rem; opacity: 0.8; margin-top: 5px; }
 #surah-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; list-style: none; padding: 0; }
 .surah-list-item { background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; cursor: pointer; transition: background-color 0.3s, transform 0.3s; display: flex; align-items: center; justify-content: space-between; }
 .surah-list-item:hover { background-color: rgba(255,255,255,0.1); transform: translateY(-5px); }
@@ -34,61 +67,29 @@ body {
 .surah-name-details h3 { margin: 0; font-size: 1.5rem; font-family: 'Noto Nastaliq Urdu'; color: white; }
 .surah-name-details p { margin: 0; opacity: 0.7; font-size: 0.9rem; }
 .surah-arabic-name { font-size: 1.8rem; font-family: 'Amiri', serif; color: var(--glow-color2); }
-        
-/* --- Surah Page --- */
+
+/* --- Surah Detail Page --- */
 .header { text-align: center; margin-bottom: 20px; }
 .header h1 { font-size: 3.5rem; color: #ecf0f1; text-shadow: 0px 2px 5px rgba(0,0,0,0.5); font-weight: 700; }
-.surah-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; perspective: 1500px; padding-top: 20px; }
+.surah-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
 @keyframes box-color-change { 0%, 100% { background: linear-gradient(145deg, #2980b9, #3498db); } 16.6% { background: linear-gradient(145deg, #8e44ad, #9b59b6); } 33.3% { background: linear-gradient(145deg, #16a085, #1abc9c); } 50% { background: linear-gradient(145deg, #d35400, #e67e22); } 66.6% { background: linear-gradient(145deg, #c0392b, #e74c3c); } 83.3% { background: linear-gradient(145deg, #2c3e50, #34495e); } }
-.ayah-box { padding: 40px 30px; border-radius: 20px; color: #fff; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); border: 2px solid transparent; display: flex; align-items: center; justify-content: center; opacity: 1; transition: transform 0.6s ease-out, border-color 0.4s ease; animation: box-color-change 18s linear infinite; }
-.ayah-box.active { border-color: var(--glow-color2); transform: scale(1.02); }
-.ayah-text { font-family: 'Amiri', serif; font-size: 2.2rem; line-height: 2.9; text-align: center; font-weight: 700; text-shadow: 0px 1px 1px rgba(0,0,0,0.2), 0px 2px 2px rgba(0,0,0,0.4), 0px 4px 6px rgba(0,0,0,0.4); animation: color-cycle 20s linear infinite; }
-@keyframes color-cycle { 0%, 100% { color: #ffffff; } 25% { color: #d1eaff; } 50% { color: #e0ffed; } 75% { color: #fff5d6; } }
+.ayah-box { padding: 40px 30px; border-radius: 20px; color: #fff; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); border: 2px solid transparent; display: flex; align-items: center; justify-content: center; animation: box-color-change 18s linear infinite; }
+.ayah-text { font-family: 'Amiri', serif; font-size: 2.2rem; line-height: 2.9; text-align: center; font-weight: 700; }
 .ayah-number { display: inline-block; font-size: 1.5rem; padding-right: 15px; opacity: 0.7; }
-.back-button { position: fixed; top: 20px; left: 20px; padding: 12px 20px; background-color: #ecf0f1; color: #2c3e50; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Noto Nastaliq Urdu', sans-serif; }
-#audio-player-container { position: sticky; top: 10px; z-index: 100; padding: 10px; margin-bottom: 20px; background: rgba(13, 18, 26, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; }
+.back-button { position: fixed; top: 20px; left: 20px; padding: 12px 20px; background-color: #ecf0f1; color: #2c3e50; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 100; }
+#audio-player-container { padding: 10px; margin-bottom: 20px; background: rgba(13, 18, 26, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; }
 #audio-player-container audio { width: 100%; }
 
-/* --- Floating Action Buttons & Modals --- */
-.fab-container { position: fixed; bottom: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 15px; }
-.fab { width: 60px; height: 60px; color: white; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
-.fab:hover { transform: scale(1.1); }
-#ai-tutor-button { background: linear-gradient(45deg, var(--glow-color4), var(--glow-color2)); }
-#ai-tutor-button:hover { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); }
-#ai-chat-button { background: linear-gradient(45deg, var(--glow-color1), var(--glow-color3)); }
-#ai-chat-button:hover { box-shadow: 0 8px 25px rgba(255, 73, 113, 0.5); }
-.fab .material-symbols-outlined { font-size: 32px; transition: transform 0.5s ease-in-out; }
-.fab:hover .material-symbols-outlined { transform: rotate(360deg); }
-#settings-icon { position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; background-color: rgba(44, 62, 80, 0.5); border-radius: 50%; cursor: pointer; transition: background-color 0.3s, transform 0.3s; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-#settings-icon:hover { background-color: rgba(44, 62, 80, 0.9); transform: rotate(45deg); }
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-content { background-color: #1e2732; border: 1px solid rgba(255, 255, 255, 0.2); padding: 25px 30px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; position: relative; animation: modal-fade-in 0.5s; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: rtl; }
-@keyframes modal-fade-in { from {opacity: 0; transform: scale(0.9);} to {opacity: 1; transform: scale(1);} }
-.close-button { color: #aaa; position: absolute; top: 10px; left: 20px; font-size: 32px; font-weight: bold; cursor: pointer; transition: color 0.2s, transform 0.2s; }
-.close-button:hover { color: white; transform: rotate(90deg); }
-.modal-content h2 { color: var(--highlight-glow); text-align: center; }
-.modal-content p { line-height: 1.8; color: #ccc; text-align: center; }
-.modal-content a { color: var(--glow-color1); text-decoration: none; display: block; padding: 10px; transition: color 0.2s; }
-.credits-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); text-align: right;}
-.credits-section p { margin: 8px 0; text-align: right; }
-.chat-container { width: 95%; max-width: 500px; height: 85%; background-color: var(--chat-bg); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transform: scale(0.9); animation: zoomIn 0.3s ease forwards; }
-@keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.chat-header { padding: 20px; background-color: var(--chat-header-bg); color: white; text-align: center; font-size: 1.5rem; font-family: 'Noto Nastaliq Urdu', sans-serif; border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; display: flex; justify-content: center; align-items: center; }
+/* --- AI Chat Page --- */
+#ai-chat-modal { display: flex; flex-direction: column; height: calc(100vh - 105px); /* Full height minus padding and nav bar */ }
+.chat-container { width: 100%; height: 100%; background-color: transparent; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; overflow: hidden; border: none; }
+.chat-header { padding: 20px; background-color: var(--chat-header-bg); color: white; text-align: center; font-size: 1.5rem; font-family: 'Noto Nastaliq Urdu'; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; }
 .chat-header .material-symbols-outlined { margin-right: 10px; color: var(--glow-color2); font-size: 2rem; }
 .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; direction: rtl; display: flex; flex-direction: column; gap: 15px; }
-.message { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.7; font-family: 'Noto Nastaliq Urdu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1.1rem; color: #e0e0e0; position: relative; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
-.user-message { background-color: #2a3b47; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 5px; animation: slideInLeft 0.3s ease forwards; }
-.ai-message { background-color: #323d49; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 5px; animation: slideInRight 0.3s ease forwards; }
-@keyframes slideInRight { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slideInLeft { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-.typing-indicator { display: flex; align-items: center; gap: 5px; }
-.typing-indicator span { width: 8px; height: 8px; background-color: #aaa; border-radius: 50%; animation: typing 1s infinite; }
-.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typing { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+.message { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.7; font-family: 'Noto Nastaliq Urdu', sans-serif; font-size: 1.1rem; color: #e0e0e0; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+.user-message { background-color: #2a3b47; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 5px; }
+.ai-message { background-color: #323d49; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 5px; }
 .chat-input-area { display: flex; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); background-color: var(--chat-header-bg); }
-#chat-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; font-size: 1rem; background-color: #323d49; color: white; transition: border-color 0.2s; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: rtl; }
+#chat-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; font-size: 1rem; background-color: #323d49; color: white; font-family: 'Noto Nastaliq Urdu', sans-serif; direction: rtl; }
 #chat-input:focus { outline: none; border-color: var(--glow-color1); }
-#send-chat-button { width: 50px; height: 50px; margin-right: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
-#send-chat-button:hover { background-color: #0b9dcc; }
+#send-chat-button { width: 50px; height: 50px; margin-right: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }

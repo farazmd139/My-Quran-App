@@ -25,16 +25,8 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 .header-title { font-family: 'Noto Nastaliq Urdu'; font-size: 1.5rem; color: white; }
-.menu-button-floating {
-    position: fixed; top: 15px; right: 15px; z-index: 1002;
-    background-color: rgba(44, 62, 80, 0.5);
-    border: none; border-radius: 50%;
-    width: 50px; height: 50px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; cursor: pointer;
-    transition: transform 0.3s, background-color 0.3s;
-}
-.menu-button-floating:hover { background-color: rgba(44, 62, 80, 0.9); transform: rotate(90deg); }
+.menu-button { background: none; border: none; color: white; cursor: pointer; padding: 5px; }
+.menu-button .material-symbols-outlined { font-size: 28px; }
 .side-menu {
     position: fixed; top: 0; right: -280px; width: 250px; height: 100%;
     background-color: #1e2732; z-index: 2002; padding-top: 80px;
@@ -67,8 +59,8 @@ body {
 .nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
 
 /* --- AI Chat Icon & Page --- */
-#ai-nav-button .ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
-#ai-nav-button .ai-icon-container::before {
+.ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
+.ai-icon-container::before {
     content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%;
     background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
     animation: liquid-flow 4s linear infinite;

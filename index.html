@@ -16,7 +16,7 @@
 <body>
 
     <header class="top-header">
-        <div class="header-title">القرآن الكريم</div>
+        <div id="header-title" class="header-title">القرآن الكريم</div>
         <button id="menu-button" class="menu-button">
             <span class="material-symbols-outlined">more_vert</span>
         </button>
@@ -31,11 +31,9 @@
     <div id="menu-overlay" class="menu-overlay"></div>
 
     <main class="main-content">
-        <!-- Page 1: Quran (Default Page) -->
-        <div id="quranPage" class="page active">
-            <ul id="surah-list">
-                <!-- Surah list will be loaded here -->
-            </ul>
+        <!-- Page 1: Quran -->
+        <div id="quranPage" class="page">
+            <ul id="surah-list"></ul>
         </div>
 
         <!-- Page 2: Faraz AI -->
@@ -47,28 +45,40 @@
         </div>
         
         <!-- Page 3: Home -->
-        <div id="homeCustomPage" class="page">
-            <div class="coming-soon-container"><h1>ہوم اسکرین (جلد آرہا ہے)</h1><p>یہاں نماز کے اوقات اور روزانہ کی آیتیں دکھائی دیں گی۔</p></div>
+        <div id="homeCustomPage" class="page active">
+            <div class="home-screen-container">
+                <div class="home-masjid-backdrop"></div>
+                <div class="prayer-times-card">
+                    <h2>نماز کے اوقات</h2>
+                    <div id="prayer-times-container">
+                        <p id="prayer-time-loader">آپ کے شہر کے نماز کے اوقات لوڈ ہو رہے ہیں...</p>
+                    </div>
+                </div>
+                <div class="ayah-display-card">
+                    <div id="daily-ayah-container">
+                        <!-- Daily Ayah will be loaded here -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Page 4: Tasbih -->
         <div id="tasbihPage" class="page">
              <div class="tasbih-container">
-                <div class="tasbih-counter-ring">
-                    <div class="tasbih-counter" id="tasbih-counter">0</div>
-                </div>
-                <div class="tasbih-bead-wrapper">
-                    <button class="tasbih-bead" id="tasbih-bead"></button>
-                </div>
-                <button class="reset-button" id="reset-button">
-                    <span class="material-symbols-outlined">restart_alt</span>
-                </button>
+                <div class="tasbih-counter-ring"><div class="tasbih-counter" id="tasbih-counter">0</div></div>
+                <div class="tasbih-bead-wrapper"><button class="tasbih-bead" id="tasbih-bead"></button></div>
+                <button class="reset-button" id="reset-button"><span class="material-symbols-outlined">restart_alt</span></button>
              </div>
         </div>
 
         <!-- Page 5: Dua -->
         <div id="duaPage" class="page">
-            <div class="coming-soon-container"><h1>دعائیں (جلد آرہا ہے)</h1><p>یہاں آپ کو ترجمے کے ساتھ 50 سے زائد دعائیں اور اللہ کے 99 نام ملیں گے۔</p></div>
+            <div class="page-header">
+                <h1>مسنون دعائیں</h1>
+                <button id="show-names-btn">اللہ کے 99 نام</button>
+            </div>
+            <div id="dua-categories"></div>
+            <div id="dua-list"></div>
         </div>
 
         <!-- Surah Detail Page (Hidden by default) -->
@@ -81,14 +91,16 @@
     </main>
 
     <nav class="bottom-nav">
-        <button class="nav-button active" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
+        <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
         <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
-        <button class="nav-button" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
+        <button class="nav-button active" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
         <button class="nav-button" data-page="tasbihPage"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></button>
         <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
     </nav>
     
-    <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں اور شکریہ</h2><p style="text-align: right;">یہ ایپ قرآن کی تعلیم کو آسان اور جدید طریقے سے سب تک پہنچانے کے نیک ارادے سے بنائی گئی ہے۔</p><div class="credits-section"><p><b>قرآنی متن اور API:</b> <a href="https://quran.com" target="_blank">Quran.com</a> کی API سے حاصل کی گئی ہیں۔</p><p><b>آڈیو تلاوت:</b> قاری <b>مشاری راشد العفاسی</b> کی ہے۔</p><p><b>AI اسسٹنٹ "فراز":</b> <b>Google's Gemini AI</b> ماڈل کا استعمال کیا گیا ہے۔</p></div></div></div>
+    <!-- Modals -->
+    <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں</h2><div class="credits-section"><p><b>قرآنی متن اور API:</b> <a href="https://quran.com" target="_blank">Quran.com</a> سے۔</p><p><b>آڈیو تلاوت:</b> قاری <b>مشاری راشد العفاسی</b>۔</p><p><b>AI اسسٹنٹ "فراز":</b> <b>Google's Gemini AI</b> ماڈل۔</p><p><b>نماز کے اوقات:</b> <a href="https://aladhan.com" target="_blank">Aladhan.com</a> API۔</p></div></div></div>
+    <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
 
     <script src="script.js"></script>
 </body>

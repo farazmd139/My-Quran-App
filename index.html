@@ -31,9 +31,11 @@
     <div id="menu-overlay" class="menu-overlay"></div>
 
     <main class="main-content">
-        <!-- Page 1: Quran -->
+        <!-- Page 1: Quran (Default Page) -->
         <div id="quranPage" class="page active">
-            <ul id="surah-list"></ul>
+            <ul id="surah-list">
+                <!-- Surah list will be loaded here -->
+            </ul>
         </div>
 
         <!-- Page 2: Faraz AI -->
@@ -51,7 +53,17 @@
 
         <!-- Page 4: Tasbih -->
         <div id="tasbihPage" class="page">
-             <div class="coming-soon-container"><h1>ڈیجیٹل تسبیح (جلد آرہا ہے)</h1><p>یہاں آپ خوبصورت 3D تسبیح پڑھ سکیں گے۔</p></div>
+             <div class="tasbih-container">
+                <div class="tasbih-counter-ring">
+                    <div class="tasbih-counter" id="tasbih-counter">0</div>
+                </div>
+                <div class="tasbih-bead-wrapper">
+                    <button class="tasbih-bead" id="tasbih-bead"></button>
+                </div>
+                <button class="reset-button" id="reset-button">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                </button>
+             </div>
         </div>
 
         <!-- Page 5: Dua -->

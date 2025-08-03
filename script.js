@@ -165,7 +165,7 @@ async function askGoogleAI(question) {
         typingMessage.innerHTML = '';
         typingMessage.innerText = aiResponse;
     } catch (error) {
-        typingMessage.innerText = "معافی چاہتا ہوں، ابھی میں جواب نہیں دے سکتا۔";
+        typingMessage.innerText = "معافی चाहता हूं, अभी मैं जवाब नहीं दे सकता।";
     }
 }
 
@@ -173,14 +173,45 @@ async function askGoogleAI(question) {
 const tasbihCounter = document.getElementById('tasbih-counter');
 const tasbihBead = document.getElementById('tasbih-bead');
 const resetButton = document.getElementById('reset-button');
+const tasbihSelect = document.getElementById('tasbih-select');
+const targetDisplay = document.getElementById('target-display');
 let count = 0;
+
+const tasbihat = [
+    { name: "سبحان الله", target: 33 },
+    { name: "الحمد لله", target: 33 },
+    { name: "الله أكبر", target: 34 },
+    { name: "لا إله إلا الله", target: 100 },
+    { name: "استغفر الله", target: 100 },
+    { name: "درود شریف", target: 100 },
+    { name: "سبحان الله وبحمده", target: 100 },
+    { name: "حسبنا الله ونعم الوكيل", target: 100 },
+    { name: "لا حول ولا قوة إلا بالله", target: 100 },
+    { name: "چھ کلمے", target: 6 }
+];
+
+tasbihat.forEach(tasbih => {
+    const option = document.createElement('option');
+    option.value = tasbih.target;
+    option.textContent = tasbih.name;
+    tasbihSelect.appendChild(option);
+});
+
+function updateTarget() {
+    targetDisplay.textContent = `/ ${tasbihSelect.value}`;
+}
+
+tasbihSelect.addEventListener('change', () => {
+    count = 0;
+    tasbihCounter.innerText = count;
+    updateTarget();
+});
 
 tasbihBead.addEventListener('click', () => {
     count++;
     tasbihCounter.innerText = count;
-    
     if (navigator.vibrate) { navigator.vibrate(50); }
-    if (count === 33 || count === 66 || count === 100) {
+    if (count == tasbihSelect.value) {
         if (navigator.vibrate) { navigator.vibrate([100, 50, 100]); }
     }
 });
@@ -192,15 +223,21 @@ resetButton.addEventListener('click', () => {
 });
 
 // --- Dua & 99 Names Functionality ---
-// This part can be added in a future update as it requires a lot of data.
+const duaCategoriesContainer = document.getElementById('dua-categories');
+const duaListContainer = document.getElementById('dua-list');
+const namesContainer = document.getElementById('names-container');
+const showNamesBtn = document.getElementById('show-names-btn');
+const showNamesBtnMore = document.getElementById('show-names-btn-more');
 
-// --- Home Page Functionality ---
-// This part can be added in a future update.
+let allDuas = []; // This will be populated with data
 
 // --- Modal & Menu Links ---
 function openModal(modalId) {
     closeAllModals();
     document.getElementById(modalId).style.display = 'flex';
+    if (modalId === 'names-modal' && namesContainer.innerHTML === '') {
+        fetchNamesOfAllah();
+    }
 }
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
@@ -228,10 +265,15 @@ document.getElementById('share-app-link').addEventListener('click', (e) => {
     }
 });
 
+showNamesBtn.addEventListener('click', () => openModal('names-modal'));
+showNamesBtnMore.addEventListener('click', () => openModal('names-modal'));
+
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchSurahList();
     showPage('homeCustomPage');
+    updateTarget();
+    // fetchDuas(); // This will be added later
 });
 
 // Service Worker Registration

@@ -4,6 +4,6 @@
     "namespace": "android_app",
     "package_name": "com.faraz.quranapp",
     "sha256_cert_fingerprints":
-    ["E0:21:40:2D:28:A4:18:33:3F:DB:26:C4:0F:44:0A:57:84:56:2E:21:4D:A4:65:E0:B3:21:C0:29:61:A5:4B:0D"]
+    ["YOUR_SHA256_FINGERPRINT_HERE"]
   }
 }]

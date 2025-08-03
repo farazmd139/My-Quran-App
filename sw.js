@@ -1,14 +1,13 @@
 // Service Worker Code
-const CACHE_NAME = 'quran-app-cache-v3'; // Version updated
+const CACHE_NAME = 'quran-app-cache-v4'; // Version updated for new structure
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
   '/script.js',
-  '/manifest.json',
   '/favicon.png',
-  '/android-launchericon-192-192.png',
-  '/android-launchericon-512-512.png'
+  '/manifest.json'
+  // We don't cache API requests, so content like surahs and duas will require internet
 ];
 
 self.addEventListener('install', event => {
@@ -22,10 +21,36 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
+  // We only handle navigation requests for offline support
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/index.html');
+      })
+    );
+  } else {
+    // For other requests (API calls, etc.), just fetch from the network
+    event.respondWith(
+      caches.match(event.request)
       .then(response => {
         return response || fetch(event.request);
       })
+    );
+  }
+});
+
+// Clean up old caches
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });

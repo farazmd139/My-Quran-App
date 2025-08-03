@@ -15,42 +15,48 @@
 </head>
 <body>
 
+    <header class="top-header">
+        <div class="header-title">القرآن الكريم</div>
+        <button id="menu-button" class="menu-button">
+            <span class="material-symbols-outlined">more_vert</span>
+        </button>
+    </header>
+
+    <div id="side-menu" class="side-menu">
+        <a href="#" id="rate-app-link">ہمیں ریٹنگ دیں</a>
+        <a href="#" id="share-app-link">ایپ شیئر کریں</a>
+        <a href="#" onclick="openModal('credits-modal'); return false;">ہمارے بارے میں</a>
+        <a href="https://telegra.ph/Privacy-Policy-for-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85---Faraz-AI-08-01" target="_blank">پرائیویسی پالیسی</a>
+    </div>
+    <div id="menu-overlay" class="menu-overlay"></div>
+
     <main class="main-content">
-        <!-- Page 1: Quran (Default Page) -->
+        <!-- Page 1: Quran -->
         <div id="quranPage" class="page active">
-            <div class="home-header"><h1>القرآن الكريم</h1></div>
             <ul id="surah-list"></ul>
         </div>
 
         <!-- Page 2: Faraz AI -->
         <div id="aiPage" class="page">
             <div class="chat-container">
-                <div class="chat-header"><span class="material-symbols-outlined">neurology</span> فراز</div>
-                <div class="chat-messages" id="chat-messages"><div class="message ai-message">السلام علیکم! میں آپ کے اسلامی سوالات کا جواب دینے کے لیے حاضر ہوں۔</div></div>
+                <div class="chat-messages" id="chat-messages"><div class="message ai-message">السلام علیکم! میں فراز ہوں، آپ کا اسلامی AI اسسٹنٹ۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</div></div>
                 <div class="chat-input-area"><input type="text" id="chat-input" placeholder="یہاں سوال لکھیں..."><button id="send-chat-button"><span class="material-symbols-outlined">send</span></button></div>
             </div>
         </div>
         
         <!-- Page 3: Home -->
         <div id="homeCustomPage" class="page">
-            <!-- New Home Screen content will come here later -->
-            <div class="home-header"><h1>ہوم (جلد آرہا ہے)</h1></div>
+            <div class="coming-soon-container"><h1>ہوم اسکرین (جلد آرہا ہے)</h1><p>یہاں نماز کے اوقات اور روزانہ کی آیتیں دکھائی دیں گی۔</p></div>
         </div>
 
         <!-- Page 4: Tasbih -->
         <div id="tasbihPage" class="page">
-            <div class="home-header"><h1>تسبیح (جلد آرہا ہے)</h1></div>
+             <div class="coming-soon-container"><h1>ڈیجیٹل تسبیح (جلد آرہا ہے)</h1><p>یہاں آپ خوبصورت 3D تسبیح پڑھ سکیں گے۔</p></div>
         </div>
 
-        <!-- Page 5: More -->
-        <div id="morePage" class="page">
-            <div class="home-header"><h1>مزید (More)</h1></div>
-            <ul class="settings-list">
-                <li onclick="openModal('names-modal')"><span class="material-symbols-outlined">shield_moon</span>اللہ کے 99 نام</li>
-                <li onclick="openModal('credits-modal')"><span class="material-symbols-outlined">info</span>ہمارے بارے میں اور شکریہ</li>
-                <li id="share-app-link"><span class="material-symbols-outlined">share</span>ایپ شیئر کریں</li>
-                <li id="rate-app-link"><span class="material-symbols-outlined">star</span>ہمیں ریٹنگ دیں</li>
-            </ul>
+        <!-- Page 5: Dua -->
+        <div id="duaPage" class="page">
+            <div class="coming-soon-container"><h1>دعائیں (جلد آرہا ہے)</h1><p>یہاں آپ کو ترجمے کے ساتھ 50 سے زائد دعائیں اور اللہ کے 99 نام ملیں گے۔</p></div>
         </div>
 
         <!-- Surah Detail Page (Hidden by default) -->
@@ -64,15 +70,13 @@
 
     <nav class="bottom-nav">
         <button class="nav-button active" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
-        <button class="nav-button" data-page="aiPage"><span class="material-symbols-outlined">smart_toy</span><span class="nav-label">Faraz AI</span></button>
+        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
         <button class="nav-button" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
         <button class="nav-button" data-page="tasbihPage"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></button>
-        <button class="nav-button" data-page="morePage"><span class="material-symbols-outlined">more_horiz</span><span class="nav-label">More</span></button>
+        <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
     </nav>
-
-    <!-- Modals (Pop-ups) -->
+    
     <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں اور شکریہ</h2><p style="text-align: right;">یہ ایپ قرآن کی تعلیم کو آسان اور جدید طریقے سے سب تک پہنچانے کے نیک ارادے سے بنائی گئی ہے۔</p><div class="credits-section"><p><b>قرآنی متن اور API:</b> <a href="https://quran.com" target="_blank">Quran.com</a> کی API سے حاصل کی گئی ہیں۔</p><p><b>آڈیو تلاوت:</b> قاری <b>مشاری راشد العفاسی</b> کی ہے۔</p><p><b>AI اسسٹنٹ "فراز":</b> <b>Google's Gemini AI</b> ماڈل کا استعمال کیا گیا ہے۔</p></div></div></div>
-    <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
 
     <script src="script.js"></script>
 </body>

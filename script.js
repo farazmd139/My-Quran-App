@@ -8,7 +8,9 @@ const surahList = document.getElementById('surah-list');
 const surahHeader = document.getElementById('surahHeader');
 const surahContainer = document.getElementById('surahContainer');
 const mainAudioPlayer = document.getElementById('mainAudioPlayer');
-const namesContainer = document.getElementById('names-container');
+const menuButton = document.getElementById('menu-button');
+const sideMenu = document.getElementById('side-menu');
+const menuOverlay = document.getElementById('menu-overlay');
 
 // --- Navigation Logic ---
 navButtons.forEach(button => {
@@ -36,6 +38,17 @@ function showPage(pageId) {
     }
 }
 
+// --- Side Menu Logic ---
+menuButton.addEventListener('click', () => {
+    sideMenu.classList.toggle('open');
+    menuOverlay.classList.toggle('open');
+});
+
+menuOverlay.addEventListener('click', () => {
+    sideMenu.classList.remove('open');
+    menuOverlay.classList.remove('open');
+});
+
 // --- Quran Functionality ---
 async function fetchSurahList() {
     try {
@@ -43,7 +56,7 @@ async function fetchSurahList() {
         const data = await response.json();
         displaySurahs(data.chapters);
     } catch (error) {
-        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی।</p>';
+        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی۔</p>';
     }
 }
 
@@ -118,24 +131,20 @@ function sendMessage() {
     askGoogleAI(question);
 }
 
-function addMessageToChat(message, sender, isTyping = false) {
+function addMessageToChat(message, sender) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
-    if (isTyping) {
-        messageElement.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
-    } else {
-        messageElement.innerText = message;
-    }
+    messageElement.innerText = message;
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return messageElement;
 }
 
 async function askGoogleAI(question) {
-    const typingMessage = addMessageToChat('', 'ai', true);
+    addMessageToChat('سوچ رہا ہوں...', 'ai');
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
     const requestData = {
-        contents: [{ parts: [{ text: `You are "Faraz," a learned Islamic scholar AI assistant. Your knowledge is based on the Quran, Tafsir, and authentic Hadith. When a user asks a question, provide a detailed, accurate, and respectful answer in the same language they used (Urdu, Hindi, or English). If possible, cite your sources. Be comprehensive but easy to understand. User's question: "${question}"` }] }]
+        contents: [{ parts: [{ text: `You are "Faraz," a learned Islamic scholar AI assistant. Your knowledge is based on Quran, Tafsir, and Hadith. Answer questions in the same language the user asks (Urdu, Hindi, or English). Cite sources if possible. User's question: "${question}"` }] }]
     };
 
     try {
@@ -143,45 +152,16 @@ async function askGoogleAI(question) {
         if (!response.ok) { throw new Error('Network response was not ok'); }
         const data = await response.json();
         const aiResponse = data.candidates[0].content.parts[0].text;
-        typingMessage.innerHTML = '';
-        typingMessage.innerText = aiResponse;
+        chatMessages.lastChild.innerText = aiResponse;
     } catch (error) {
-        typingMessage.innerText = "معافی चाहता हूं, अभी मैं जवाब नहीं दे सकता।";
+        chatMessages.lastChild.innerText = "معافی चाहता हूं, अभी मैं जवाब नहीं दे सकता।";
     }
 }
 
-// --- 99 Names of Allah Functionality ---
-async function fetchNamesOfAllah() {
-    try {
-        // Using a reliable public API for 99 names
-        const response = await fetch('https://api.aladhan.com/v1/asmaAlHusna');
-        const data = await response.json();
-        displayNames(data.data);
-    } catch (error) {
-        namesContainer.innerHTML = '<p style="text-align:center;">نام لوڈ کرنے میں ناکامی۔</p>';
-    }
-}
-
-function displayNames(names) {
-    namesContainer.innerHTML = '';
-    names.forEach(name => {
-        const nameCard = document.createElement('div');
-        nameCard.className = 'name-card';
-        nameCard.innerHTML = `
-            <p class="name-arabic">${name.name}</p>
-            <p class="name-translation">${name.transliteration} - ${name.en.meaning}</p>
-        `;
-        namesContainer.appendChild(nameCard);
-    });
-}
-
-// --- Modal Control & Extra Features ---
+// --- Modal & Menu Links ---
 function openModal(modalId) {
     closeAllModals();
     document.getElementById(modalId).style.display = 'flex';
-    if (modalId === 'names-modal' && namesContainer.innerHTML === '') {
-        fetchNamesOfAllah();
-    }
 }
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
@@ -212,7 +192,7 @@ document.getElementById('share-app-link').addEventListener('click', (e) => {
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
     fetchSurahList();
-    showPage('quranPage');
+    showPage('quranPage'); // Start on the Quran page
 });
 
 // Service Worker Registration

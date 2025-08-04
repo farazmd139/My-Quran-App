@@ -7,7 +7,11 @@
     <meta name="theme-color" content="#161b22">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="favicon.png" type="image/png">
+    
+    <!-- Main Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
@@ -28,12 +32,10 @@
     <main class="main-content">
         <!-- Main Quran Page (List of Surahs) -->
         <div id="quranListPage" class="page active">
-            <div class="page-header">
-                <h1>القرآن الكريم</h1>
-            </div>
-            <ul id="surah-list">
+             <div class="home-header"><h1>القرآن الكريم</h1></div>
+             <ul id="surah-list">
                 <!-- Surah list will be loaded here by JavaScript -->
-            </ul>
+             </ul>
         </div>
         
         <!-- Surah Detail Page (Hidden by default) -->
@@ -55,7 +57,8 @@
     
     <!-- Modals -->
     <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں</h2><div class="credits-section"><p><b>تمام مواد:</b> مستند اسلامی وسائل سے جمع کیا گیا۔</p></div></div></div>
-    
-    <script src="script.js"></script>
+
+    <!-- Quran Page Specific JavaScript -->
+    <script src="quran.js"></script>
 </body>
 </html>

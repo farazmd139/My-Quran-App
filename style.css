@@ -3,7 +3,7 @@ body {
     font-family: 'Amiri', serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #1a2a44, #0d1b2a);
+    background: #1a2a44;
     color: #f0f0f0;
     overflow-x: hidden;
     direction: rtl;
@@ -87,26 +87,8 @@ body {
 }
 
 /* Home Screen */
-#homeCustomPage {
+#home {
     text-align: center;
-}
-
-.background-art {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('https://www.transparenttextures.com/patterns/arabesque.png') repeat;
-    opacity: 0.1;
-    z-index: -1;
-}
-
-.header-title {
-    margin: 20px 0;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
 }
 
 .home-section {
@@ -129,38 +111,6 @@ body {
 .ayah-translation, .dua-translation {
     font-size: 1em;
     color: #b0c4de;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes rotateIn {
-    from { transform: rotate(-10deg); opacity: 0; }
-    to { transform: rotate(0); opacity: 1; }
-}
-
-@keyframes bounceIn {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes zoomIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.animated {
-    animation-duration: 1s;
-    animation-fill-mode: both;
 }
 
 /* Quran Page */
@@ -352,4 +302,29 @@ body {
     margin: 10px 0;
     background: #3a5577;
     border-radius: 5px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #2a4066;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.nav-icon {
+    text-decoration: none;
+    color: #f0f0f0;
+    font-size: 1.2em;
+}
+
+.nav-icon img {
+    width: 30px;
+    height: 30px;
 }

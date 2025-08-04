@@ -7,6 +7,8 @@
     --surah-list-bg: rgba(255, 255, 255, 0.05);
     --surah-list-hover: rgba(255, 255, 255, 0.1);
     --surah-list-border: rgba(255, 255, 255, 0.1);
+    --chat-bg: #1e2732;
+    --chat-header-bg: #161b22;
 }
 
 body {
@@ -23,7 +25,7 @@ body {
 }
 
 .main-content {
-    padding-bottom: 80px; /* Space for FABs */
+    padding-bottom: 80px;
 }
 
 .page { display: none; }
@@ -110,10 +112,7 @@ body {
     background: linear-gradient(90deg, transparent, rgba(147, 51, 234, 0.5), transparent);
     animation: light-sweep 4s linear infinite;
 }
-@keyframes light-sweep {
-    from { left: -100%; }
-    to { left: 100%; }
-}
+@keyframes light-sweep { from { left: -100%; } to { left: 100%; } }
 #mainAudioPlayer { display: none; }
 .player-controls { display: flex; align-items: center; gap: 15px; }
 .play-pause-btn {
@@ -175,8 +174,75 @@ body {
     color: white;
 }
 
+/* --- AI Chat Modal --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.chat-container {
+    width: 95%; max-width: 500px; height: 85%;
+    background-color: var(--chat-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    transform: scale(0.9);
+    animation: zoomIn 0.3s ease forwards;
+}
+@keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.chat-header {
+    padding: 20px; background-color: var(--chat-header-bg); color: white;
+    text-align: center; font-size: 1.5rem; font-family: 'Noto Nastaliq Urdu';
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+}
+.close-button {
+    color: #aaa; position: absolute; top: 15px; right: 20px;
+    font-size: 28px; font-weight: bold; cursor: pointer;
+}
+.chat-messages {
+    flex-grow: 1; padding: 15px; overflow-y: auto; direction: rtl;
+    display: flex; flex-direction: column; gap: 15px;
+}
+.message {
+    padding: 12px 18px; border-radius: 20px; max-width: 85%;
+    line-height: 1.7; font-family: 'Noto Nastaliq Urdu', sans-serif;
+    font-size: 1.1rem; color: #e0e0e0;
+}
+.user-message { background-color: #2a3b47; align-self: flex-start; margin-right: auto; }
+.ai-message { background-color: #323d49; align-self: flex-end; margin-left: auto; }
+
+.chat-input-area {
+    display: flex; padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background-color: var(--chat-header-bg);
+}
+#chat-input {
+    flex-grow: 1; padding: 12px 20px; border-radius: 25px;
+    border: 1px solid #444; font-size: 1rem;
+    background-color: #323d49; color: white;
+    font-family: 'Noto Nastaliq Urdu', sans-serif;
+    direction: ltr; /* Fix for typing issue */
+}
+#send-chat-button {
+    width: 50px; height: 50px; margin-left: 10px;
+    border-radius: 50%; border: none; background-color: var(--glow-color1);
+    color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+
 /* --- Ayah Box Unique Colors --- */
-/* Add 30+ unique background styles */
 .ayah-box:nth-child(30n+1) { background: #6d28d9; }
 .ayah-box:nth-child(30n+2) { background: #10b981; }
 .ayah-box:nth-child(30n+3) { background: #db2777; }

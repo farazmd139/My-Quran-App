@@ -5,19 +5,20 @@ const surahList = document.getElementById('surah-list');
 const surahHeader = document.getElementById('surahHeader');
 const surahContainer = document.getElementById('surahContainer');
 const mainAudioPlayer = document.getElementById('mainAudioPlayer');
-const navButtons = document.querySelectorAll('.nav-button');
+const playPauseBtn = document.querySelector('.play-pause-btn');
+const playIcon = document.querySelector('.play-icon');
+const pauseIcon = document.querySelector('.pause-icon');
+const progressContainer = document.querySelector('.progress-container');
+const progressBar = document.querySelector('.progress-bar');
+const timeDisplay = document.querySelector('.time-display');
 
 // --- Page Navigation ---
-function showQuranPage(pageId) {
-    // This function will now only handle pages within quran.html
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
     if (pageId === 'quranListPage') {
-        quranListPage.classList.add('active');
-        surahDetailPage.classList.remove('active');
         mainAudioPlayer.pause();
         mainAudioPlayer.src = '';
-    } else if (pageId === 'surahDetailPage') {
-        quranListPage.classList.remove('active');
-        surahDetailPage.classList.add('active');
     }
 }
 
@@ -25,19 +26,15 @@ function showQuranPage(pageId) {
 async function fetchSurahList() {
     try {
         const response = await fetch('https://api.quran.com/api/v4/chapters');
-        if (!response.ok) {
-            throw new Error(`API call failed with status: ${response.status}`);
-        }
         const data = await response.json();
         displaySurahs(data.chapters);
     } catch (error) {
-        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی। براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔</p>';
-        console.error("Error fetching surah list:", error);
+        surahList.innerHTML = '<p style="color: white; text-align: center;">سورہ کی فہرست لوڈ کرنے میں ناکامی।</p>';
     }
 }
 
 function displaySurahs(surahs) {
-    surahList.innerHTML = ''; // Clear previous list
+    surahList.innerHTML = '';
     surahs.forEach(surah => {
         const listItem = document.createElement('li');
         listItem.className = 'surah-list-item';
@@ -57,7 +54,7 @@ function displaySurahs(surahs) {
 }
 
 async function loadSurah(surahId) {
-    showQuranPage('surahDetailPage');
+    showPage('surahDetailPage');
     surahHeader.innerHTML = '<h1>لوڈ ہو رہا ہے...</h1>';
     surahContainer.innerHTML = '';
     
@@ -65,7 +62,7 @@ async function loadSurah(surahId) {
         const [versesRes, infoRes, audioRes] = await Promise.all([
             fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${surahId}`),
             fetch(`https://api.quran.com/api/v4/chapters/${surahId}`),
-            fetch(`https://api.quran.com/api/v4/chapter_recitations/7/${surahId}`) // Reciter: Mishary Rashid Alafasy
+            fetch(`https://api.quran.com/api/v4/chapter_recitations/7/${surahId}`)
         ]);
 
         const versesData = await versesRes.json();
@@ -76,34 +73,70 @@ async function loadSurah(surahId) {
         surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}<h1>${surahInfo.name_arabic}</h1>`;
         
         mainAudioPlayer.src = audioData.audio_file.audio_url;
-        mainAudioPlayer.play().catch(e => console.log("Autoplay was prevented by the browser."));
 
         versesData.verses.forEach((ayah, index) => {
             const box = document.createElement('div');
             box.className = 'ayah-box';
             box.innerHTML = `<p class="ayah-text">${ayah.text_uthmani}<span class="ayah-number">${index + 1}</span></p>`;
-            box.style.animationDelay = `-${index * 1.5}s`;
             surahContainer.appendChild(box);
         });
 
     } catch (error) {
         surahHeader.innerHTML = '<h1>سورہ لوڈ کرنے میں ناکامی</h1>';
-        console.error("Error loading surah:", error);
     }
 }
 
+// --- Custom Audio Player Logic ---
+function togglePlay() {
+    if (mainAudioPlayer.paused) {
+        mainAudioPlayer.play();
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+    } else {
+        mainAudioPlayer.pause();
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+    }
+}
 
-// --- Initial Load for the current page ---
+function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+mainAudioPlayer.addEventListener('timeupdate', () => {
+    const progress = (mainAudioPlayer.currentTime / mainAudioPlayer.duration) * 100 || 0;
+    progressBar.style.width = `${progress}%`;
+    timeDisplay.textContent = `${formatTime(mainAudioPlayer.currentTime)} / ${formatTime(mainAudioPlayer.duration || 0)}`;
+});
+
+mainAudioPlayer.addEventListener('loadedmetadata', () => {
+    timeDisplay.textContent = `${formatTime(0)} / ${formatTime(mainAudioPlayer.duration)}`;
+});
+
+mainAudioPlayer.addEventListener('ended', () => {
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+});
+
+playPauseBtn.addEventListener('click', togglePlay);
+
+progressContainer.addEventListener('click', (e) => {
+    const width = progressContainer.clientWidth;
+    const clickX = e.offsetX;
+    mainAudioPlayer.currentTime = (clickX / width) * mainAudioPlayer.duration;
+});
+
+
+// --- Floating Action Buttons Logic ---
+// (We will add AI and other functionalities here later)
+document.getElementById('home-fab').addEventListener('click', () => {
+    showPage('quranListPage');
+});
+
+
+// --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    // This script will only run on quran.html, so we fetch the surah list directly.
     fetchSurahList();
-    
-    // Set the correct active button in the nav bar
-    navButtons.forEach(btn => {
-        if (btn.href && btn.href.includes('quran.html')) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
 });

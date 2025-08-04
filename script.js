@@ -27,6 +27,8 @@ const showNamesBtn = document.getElementById('show-names-btn');
 const prayerTimeContainer = document.getElementById('prayer-times-container');
 const dailyAyahContainer = document.getElementById('daily-ayah-container');
 const prayerTimeLoader = document.getElementById('prayer-time-loader');
+const rateAppLink = document.getElementById('rate-app-link');
+const shareAppLink = document.getElementById('share-app-link');
 
 // --- Navigation & Side Menu Logic ---
 navButtons.forEach(button => {
@@ -39,26 +41,24 @@ navButtons.forEach(button => {
 
 function showPage(pageId) {
     pages.forEach(page => page.classList.remove('active'));
+    navButtons.forEach(btn => btn.classList.remove('active'));
+
     const activePage = document.getElementById(pageId);
-    if (activePage) {
-        activePage.classList.add('active');
-        const pageTitles = {
-            quranPage: "القرآن الكريم",
-            aiPage: "Faraz AI اسسٹنٹ",
-            homeCustomPage: "ہوم",
-            tasbihPage: "ڈیجیٹل تسبیح",
-            duaPage: "دعائیں اور اذکار",
-            surahDetailPage: "القرآن الكريم"
-        };
-        headerTitle.textContent = pageTitles[pageId] || "القرآن الكريم";
-        
-        // Show/Hide Floating Menu Button
-        if (pageId === 'homeCustomPage') {
-            menuButton.classList.add('visible');
-        } else {
-            menuButton.classList.remove('visible');
-        }
-    }
+    const activeButton = document.querySelector(`.nav-button[data-page="${pageId}"]`);
+
+    if (activePage) activePage.classList.add('active');
+    if (activeButton) activeButton.classList.add('active');
+    
+    const pageTitles = {
+        quranPage: "القرآن الكريم",
+        aiPage: "Faraz AI اسسٹنٹ",
+        homeCustomPage: "ہوم",
+        tasbihPage: "ڈیجیٹل تسبیح",
+        duaPage: "دعائیں اور اذکار",
+        surahDetailPage: "القرآن الكريم"
+    };
+    headerTitle.textContent = pageTitles[pageId] || "القرآن الكريم";
+
     if (pageId !== 'surahDetailPage') {
         mainAudioPlayer.pause();
         mainAudioPlayer.src = '';
@@ -78,6 +78,7 @@ menuOverlay.addEventListener('click', () => {
 async function fetchSurahList() {
     try {
         const response = await fetch('https://api.quran.com/api/v4/chapters');
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         displaySurahs(data.chapters);
     } catch (error) {
@@ -90,16 +91,7 @@ function displaySurahs(surahs) {
     surahs.forEach(surah => {
         const listItem = document.createElement('li');
         listItem.className = 'surah-list-item';
-        listItem.innerHTML = `
-            <div class="surah-info">
-                <span class="surah-number">${surah.id}</span>
-                <div class="surah-name-details">
-                    <h3>${surah.name_simple}</h3>
-                    <p>${surah.translated_name.name} - ${surah.verses_count} آیات</p>
-                </div>
-            </div>
-            <span class="surah-arabic-name">${surah.name_arabic}</span>
-        `;
+        listItem.innerHTML = `<div class="surah-info"><span class="surah-number">${surah.id}</span><div class="surah-name-details"><h3>${surah.name_simple}</h3><p>${surah.translated_name.name} - ${surah.verses_count} آیات</p></div></div><span class="surah-arabic-name">${surah.name_arabic}</span>`;
         listItem.addEventListener('click', () => loadSurah(surah.id));
         surahList.appendChild(listItem);
     });
@@ -122,7 +114,8 @@ async function loadSurah(surahId) {
         const audioData = await audioRes.json();
 
         const surahInfo = infoData.chapter;
-        surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}<h1>${surahInfo.name_arabic}</h1>`;
+        headerTitle.textContent = surahInfo.name_arabic;
+        surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}`;
         
         mainAudioPlayer.src = audioData.audio_file.audio_url;
         mainAudioPlayer.play().catch(e => console.log("Autoplay prevented."));
@@ -227,8 +220,23 @@ resetButton.addEventListener('click', () => {
 });
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
-const allContent = [ /* ... All your content will be here ... */ ];
-const namesData = [ /* ... All 99 names will be here ... */ ];
+// This is a very large amount of data. It is better to load this from a separate JSON file.
+// For now, I will add a few examples to ensure the functionality works.
+const allContent = [
+    // 6 Kalmas
+    { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔" },
+    { category: "6 کلمے", arabic: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", translation: "میں گواہی دیتا ہوں کہ کوئی معبود نہیں سوائے اللہ کے، اور میں گواہی دیتا ہوں کہ محمد صلی اللہ علیہ وسلم اس کے بندے اور رسول ہیں۔" },
+    // Add other kalmas...
+
+    // 50 Duas
+    { category: "50 دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔" },
+    // Add other duas...
+
+    // 40 Hadiths
+    { category: "40 احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔ (صحیح بخاری: 1)" },
+    // Add other hadiths...
+];
+const namesData = [ {"name": "الرحمن", "transliteration": "Ar-Rahman", "ur_meaning": "بہت مہربان"}, {"name": "الرحيم", "transliteration": "Ar-Rahim", "ur_meaning": "نہایت رحم والا"}, /*...and so on*/ ];
 
 function loadDuaContent() {
     const categories = [...new Set(allContent.map(item => item.category))];
@@ -244,6 +252,7 @@ function loadDuaContent() {
         });
         duaCategoriesContainer.appendChild(button);
     });
+
     if (duaCategoriesContainer.firstChild) {
         duaCategoriesContainer.firstChild.classList.add('active');
         filterContent(categories[0]);
@@ -272,8 +281,6 @@ function displayNames(names) {
 }
 
 showNamesBtn.addEventListener('click', () => openModal('names-modal'));
-document.getElementById('show-names-btn-more')?.addEventListener('click', () => openModal('names-modal'));
-
 
 // --- Home Page Functionality ---
 const dailyAyahs = [
@@ -312,6 +319,7 @@ function showRandomAyah() {
     dailyAyahContainer.innerHTML = `<p class="ayah-arabic">${ayah.arabic}</p><p class="ayah-translation">${ayah.translation}</p>`;
 }
 
+
 // --- Modal & Menu Links ---
 function openModal(modalId) {
     closeAllModals();
@@ -327,12 +335,12 @@ function closeAllModals() {
     document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
 }
 
-document.getElementById('rate-app-link').addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
-document.getElementById('share-app-link').addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
+rateAppLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
+shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    navigate();
+    showPage('homeCustomPage');
     fetchSurahList();
     updateTarget();
     loadDuaContent();

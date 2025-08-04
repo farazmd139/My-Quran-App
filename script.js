@@ -30,13 +30,26 @@ const prayerTimeLoader = document.getElementById('prayer-time-loader');
 
 // --- Navigation & Side Menu Logic ---
 navButtons.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
         const pageId = button.dataset.page;
-        showPage(pageId);
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+        window.location.hash = pageId;
     });
 });
+
+window.addEventListener('hashchange', navigate);
+
+function navigate() {
+    const pageId = window.location.hash.substring(1) || 'homeCustomPage';
+    showPage(pageId);
+    navButtons.forEach(btn => {
+        if (btn.dataset.page === pageId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
 
 function showPage(pageId) {
     pages.forEach(page => page.classList.remove('active'));
@@ -116,7 +129,8 @@ async function loadSurah(surahId) {
         const audioData = await audioRes.json();
 
         const surahInfo = infoData.chapter;
-        surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}<h1>${surahInfo.name_arabic}</h1>`;
+        headerTitle.textContent = surahInfo.name_arabic;
+        surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}`;
         
         mainAudioPlayer.src = audioData.audio_file.audio_url;
         mainAudioPlayer.play().catch(e => console.log("Autoplay prevented."));
@@ -181,16 +195,11 @@ async function askGoogleAI(question) {
 // --- Tasbih Functionality ---
 let count = 0;
 const tasbihat = [
-    { name: "سُبْحَانَ اللَّهِ", target: 33 },
-    { name: "الْحَمْدُ لِلَّهِ", target: 33 },
-    { name: "اللَّهُ أَكْبَرُ", target: 34 },
-    { name: "أَسْتَغْفِرُ اللَّهَ", target: 100 },
-    { name: "لَا إِلَهَ إِلَّا اللَّهُ", target: 100 },
-    { name: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", target: 100 },
-    { name: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", target: 100 },
-    { name: "سُبْحَانَ اللَّهِ الْعَظِيمِ", target: 100 },
-    { name: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", target: 100 },
-    { name: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ", target: 100 }
+    { name: "سُبْحَانَ اللَّهِ", target: 33 }, { name: "الْحَمْدُ لِلَّهِ", target: 33 },
+    { name: "اللَّهُ أَكْبَرُ", target: 34 }, { name: "أَسْتَغْفِرُ اللَّهَ", target: 100 },
+    { name: "لَا إِلَهَ إِلَّا اللَّهُ", target: 100 }, { name: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", target: 100 },
+    { name: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", target: 100 }, { name: "سُبْحَانَ اللَّهِ الْعَظِيمِ", target: 100 },
+    { name: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", target: 100 }, { name: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ", target: 100 }
 ];
 
 tasbihat.forEach(tasbih => {
@@ -226,7 +235,6 @@ resetButton.addEventListener('click', () => {
 });
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
-// This is the largest part of the code, containing all your data.
 let allContent = [];
 const namesData = [
     {"name": "الرحمن", "transliteration": "Ar-Rahman", "ur_meaning": "بہت مہربان"},
@@ -330,7 +338,7 @@ const namesData = [
     {"name": "الصبور", "transliteration": "As-Sabur", "ur_meaning": "صبر کرنے والا"}
 ];
 
-function loadContentData() {
+async function loadContentData() {
     allContent = [
         // 6 Kalmas
         { category: "کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔" },
@@ -439,7 +447,6 @@ function loadContentData() {
     displayDuaCategories(categories);
     filterContent(categories[0]);
 }
-
 function displayDuaCategories(categories) {
     duaCategoriesContainer.innerHTML = '';
     categories.forEach(category => {
@@ -453,11 +460,8 @@ function displayDuaCategories(categories) {
         });
         duaCategoriesContainer.appendChild(button);
     });
-    if (duaCategoriesContainer.firstChild) {
-        duaCategoriesContainer.firstChild.classList.add('active');
-    }
+    duaCategoriesContainer.firstChild.classList.add('active');
 }
-
 function filterContent(category) {
     const items = allContent.filter(item => item.category === category);
     duaListContainer.innerHTML = '';
@@ -468,7 +472,6 @@ function filterContent(category) {
         duaListContainer.appendChild(card);
     });
 }
-
 function displayNames(names) {
     namesContainer.innerHTML = '';
     names.forEach(name => {
@@ -478,23 +481,38 @@ function displayNames(names) {
         namesContainer.appendChild(nameCard);
     });
 }
-
 showNamesBtn.addEventListener('click', () => openModal('names-modal'));
-showNamesBtnMore.addEventListener('click', () => openModal('names-modal'));
+document.getElementById('show-names-btn-more').addEventListener('click', () => openModal('names-modal'));
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    fetchSurahList();
-    loadContentData();
-    showPage('homeCustomPage');
-    updateTarget();
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            getPrayerTimes(position.coords.latitude, position.coords.longitude);
-        }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
+    // Determine the current page by checking the HTML filename
+    const path = window.location.pathname;
+    const page = path.split("/").pop();
+
+    if (page === 'index.html' || page === '') {
+        showPage('homeCustomPage');
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                getPrayerTimes(position.coords.latitude, position.coords.longitude);
+            }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
+        } else {
+            prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
+        }
+        showRandomAyah();
+        setInterval(showRandomAyah, 600000);
+    } else if (page === 'quran.html') {
+        showPage('quranPage');
+        fetchSurahList();
+    } else if (page === 'ai.html') {
+        showPage('aiPage');
+    } else if (page === 'tasbih.html') {
+        showPage('tasbihPage');
+        updateTarget();
+    } else if (page === 'dua.html') {
+        showPage('duaPage');
+        loadContentData();
     }
-    showRandomAyah();
-    setInterval(showRandomAyah, 600000);
 });
 
 // Service Worker Registration

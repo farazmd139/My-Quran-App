@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>القرآن الكريم - Faraz AI</title>
+    <title>القرآن الكريم - Home</title>
     <meta name="theme-color" content="#161b22">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="favicon.png" type="image/png">
+    
+    <!-- Main Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
@@ -15,71 +19,29 @@
 </head>
 <body>
 
-    <header class="top-header">
-        <div id="header-title" class="header-title">ہوم</div>
-        <button id="menu-button" class="menu-button"><span class="material-symbols-outlined">more_vert</span></button>
-    </header>
-
-    <div id="side-menu" class="side-menu">
-        <a href="#" id="rate-app-link">ہمیں ریٹنگ دیں</a>
-        <a href="#" id="share-app-link">ایپ شیئر کریں</a>
-        <a href="#" onclick="openModal('credits-modal'); return false;">ہمارے بارے میں</a>
-        <a href="https://telegra.ph/Privacy-Policy-for-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85---Faraz-AI-08-01" target="_blank">پرائیویسی پالیسی</a>
-    </div>
-    <div id="menu-overlay" class="menu-overlay"></div>
-
     <main class="main-content">
-        <div id="homeCustomPage" class="page active">
-            <div class="coming-soon-container"><h1>ہوم اسکرین (جلد آرہا ہے)</h1><p>یہاں نماز کے اوقات اور روزانہ کی آیتیں دکھائی دیں گی۔</p></div>
-        </div>
-        <div id="quranPage" class="page">
-            <ul id="surah-list"></ul>
-        </div>
-        <div id="aiPage" class="page">
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages"><div class="message ai-message">السلام علیکم! میں فراز ہوں، آپ کا اسلامی AI اسسٹنٹ۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</div></div>
-                <div class="chat-input-area"><input type="text" id="chat-input" placeholder="یہاں سوال لکھیں..."><button id="send-chat-button"><span class="material-symbols-outlined">send</span></button></div>
+        <!-- Home Page Content -->
+        <div class="home-screen-container">
+            <div class="home-masjid-backdrop"></div>
+            <div class="prayer-times-card">
+                <h2>نماز کے اوقات</h2>
+                <div id="prayer-times-container"><p id="prayer-time-loader">آپ کے شہر کے نماز کے اوقات لوڈ ہو رہے ہیں...</p></div>
             </div>
-        </div>
-        <div id="tasbihPage" class="page">
-            <div class="tasbih-header"><select id="tasbih-select"></select></div>
-            <div class="tasbih-container">
-                <div class="tasbih-counter-ring"><div class="tasbih-counter" id="tasbih-counter">0</div></div>
-                <div class="tasbih-bead-wrapper"><button class="tasbih-bead" id="tasbih-bead"></button></div>
-                <div class="tasbih-controls">
-                    <button class="reset-button" id="reset-button"><span class="material-symbols-outlined">restart_alt</span></button>
-                    <div class="target-display" id="target-display">/ 33</div>
-                </div>
+            <div class="ayah-display-card">
+                <div id="daily-ayah-container"></div>
             </div>
-        </div>
-        <div id="duaPage" class="page">
-            <div class="page-header">
-                <h1>دعائیں اور اذکار</h1>
-                <button id="show-names-btn">اللہ کے 99 نام</button>
-            </div>
-            <div id="dua-categories"></div>
-            <div id="dua-list"></div>
-        </div>
-        <div id="surahDetailPage" class="page">
-             <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
-             <header id="surahHeader" class="header"></header>
-             <div id="audio-player-container"><audio id="mainAudioPlayer" controls preload="metadata"></audio></div>
-             <main id="surahContainer" class="surah-container"></main>
         </div>
     </main>
 
     <nav class="bottom-nav">
-        <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
-        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
-        <button class="nav-button active" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
-        <button class="nav-button" data-page="tasbihPage"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></button>
-        <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
+        <a href="quran.html" class="nav-button"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></a>
+        <a href="ai.html" class="nav-button"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></a>
+        <a href="index.html" class="nav-button active"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></a>
+        <a href="tasbih.html" class="nav-button"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></a>
+        <a href="dua.html" class="nav-button"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></a>
     </nav>
     
-    <!-- Modals -->
-    <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں</h2><div class="credits-section"><p><b>تمام مواد:</b> مستند اسلامی وسائل سے جمع کیا گیا۔</p></div></div></div>
-    <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
-
-    <script src="script.js"></script>
+    <!-- Home Page Specific JavaScript -->
+    <script src="home.js"></script>
 </body>
 </html>

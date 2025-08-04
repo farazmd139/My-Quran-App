@@ -59,7 +59,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255,255,255,0.1);
-    animation: box-color-change 18s linear infinite;
+    animation: box-color-change 18s linear infinite alternate; /* बदला हुआ */
 }
 #audio-player-container audio { width: 100%; }
 

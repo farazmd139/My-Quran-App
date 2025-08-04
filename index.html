@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>القرآن الكريم</title>
-    <meta name="theme-color" content="#161b22">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="style.css">
+    <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
@@ -18,30 +16,40 @@
     <main class="main-content">
         <!-- Main Quran Page (List of Surahs) -->
         <div id="quranListPage" class="page active">
-            <div class="page-header">
-                <h1>القرآن الكريم</h1>
-            </div>
-            <ul id="surah-list">
-                <!-- Surah list will be loaded here by JavaScript -->
-            </ul>
+            <div class="page-header"><h1>القرآن الكريم</h1></div>
+            <ul id="surah-list"></ul>
         </div>
         
         <!-- Surah Detail Page (Hidden by default) -->
         <div id="surahDetailPage" class="page">
-             <button class="back-button" onclick="showQuranPage('quranListPage')">⇦ تمام سورتیں</button>
              <header id="surahHeader" class="header"></header>
-             <div id="audio-player-container"><audio id="mainAudioPlayer" controls preload="metadata"></audio></div>
+
+             <!-- New Custom Audio Player -->
+             <div id="audio-player-container" class="audio-player-wrapper">
+                <audio id="mainAudioPlayer" preload="metadata"></audio>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="player-controls">
+                    <div class="time-display">00:00 / 00:00</div>
+                    <button class="play-pause-btn">
+                        <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                        <svg class="pause-icon" style="display:none;" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+                    </button>
+                </div>
+             </div>
+             
              <main id="surahContainer" class="surah-container"></main>
         </div>
     </main>
 
-    <nav class="bottom-nav">
-        <button class="nav-button active" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
-        <button class="nav-button" data-page="aiPage"><span class="material-symbols-outlined">smart_toy</span><span class="nav-label">Faraz AI</span></button>
-        <button class="nav-button" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
-        <button class="nav-button" data-page="tasbihPage"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></button>
-        <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
-    </nav>
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+        <button id="home-fab" class="fab home-fab"><span class="material-symbols-outlined">home</span></button>
+        <button id="ai-fab" class="fab ai-fab"><span class="material-symbols-outlined">smart_toy</span></button>
+    </div>
+    
+    <!-- Settings button is inside Surah Detail Page now -->
     
     <script src="script.js"></script>
 </body>

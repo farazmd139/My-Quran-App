@@ -176,7 +176,7 @@ async function askGoogleAI(question) {
         typingMessage.innerHTML = '';
         typingMessage.innerText = aiResponse;
     } catch (error) {
-        typingMessage.innerText = "معافی चाहता हूं, अभी मैं जवाब नहीं दे सकता।";
+        typingMessage.innerText = "معافی चाहتا हूं, अभी میں جواب نہیں دے سکتا۔";
     }
 }
 
@@ -224,9 +224,9 @@ resetButton.addEventListener('click', () => {
 
 // --- Home Page Functionality ---
 const dailyAyahs = [
-    { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", translation: "پس تم अपने रब की कौन-कौन सी نعمتوں को جھٹلاؤ گے؟" },
-    { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", translation: "بے شک हर मुश्किल के साथ آسانی ہے۔" },
-    { arabic: "وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", translation: "और जो अल्लाह पर بھروسہ करता है, तो वह उसके लिए کافی ہے۔" }
+    { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", translation: "پس تم اپنے رب کی کون کون سی نعمتوں کو جھٹلاؤ گے؟" },
+    { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", translation: "بے شک ہر مشکل کے ساتھ آسانی ہے۔" },
+    { arabic: "وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", translation: "اور جو اللہ پر بھروسہ کرتا ہے، تو وہ اس کے لیے کافی ہے۔" }
 ];
 
 async function getPrayerTimes(latitude, longitude) {
@@ -260,114 +260,147 @@ function showRandomAyah() {
 }
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
-const allContent = [
-    // Your 6 Kalmas
-    { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔" },
-    { category: "6 کلمے", arabic: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", translation: "میں گواہی دیتا ہوں کہ کوئی معبود نہیں سوائے اللہ کے، اور میں گواہی دیتا ہوں کہ محمد صلی اللہ علیہ وسلم اس کے بندے اور رسول ہیں۔" },
-    { category: "6 کلمے", arabic: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ", translation: "اللہ پاک ہے، تمام تعریفیں اللہ کے لیے ہیں، کوئی معبود نہیں سوائے اللہ کے، اور اللہ سب سے بڑا ہے۔" },
-    { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "کوئی معبود نہیں سوائے اللہ کے، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہی ہے اور اسی کے لیے حمد ہے، وہ زندہ کرتا ہے اور مارتا ہے، اور وہ ہر چیز پر قادر ہے۔" },
-    { category: "6 کلمے", arabic: "أَسْتَغْفِرُ اللَّهَ رَبِّي مِنْ كُلِّ ذَنْبٍ وَأَتُوبُ إِلَيْهِ", translation: "میں اپنے رب اللہ سے ہر گناہ کی مغفرت مانگتا ہوں اور اس کی طرف توبہ کرتا ہوں۔" },
-    { category: "6 کلمے", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ أَنْ أُشْرِكَ بِكَ شَيْئًا وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس سے کہ میں جانتے ہوئے تیرے ساتھ کسی کو شریک کروں، اور اس کے لیے مغفرت مانگتا ہوں جو میں نہیں جانتا۔" },
-    
-    // Your 50 Duas
-    // (I am adding all 50 duas you provided)
-    { category: "50 دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔" },
-    { category: "50 دعائیں", arabic: "رَبَّنَا آتِنَا فِی الدُّنْیَا حَسَنَةً وَّفِی الْآخِرَةِ حَسَنَةً وَّقِنَا عَذَابَ النَّارِ", translation: "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما اور آخرت میں بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔" },
-    // ... (The rest of the 48 duas will be here)
-    
-    // Your 40 Hadiths
-    { category: "40 احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔ (صحیح بخاری: 1)" },
-    // ... (The rest of the 39 hadiths will be here)
-];
-
 const namesData = [
-    {"name": "الرحمن", "transliteration": "Ar-Rahman", "ur_meaning": "بہت مہربان"},
-    {"name": "الرحيم", "transliteration": "Ar-Rahim", "ur_meaning": "نہایت رحم والا"},
-    // ... (All 99 names with Urdu meaning will be here)
+    { name: "الرحمن", transliteration: "Ar-Rahman", ur_meaning: "بہت مہربان" },
+    { name: "الرحيم", transliteration: "Ar-Rahim", ur_meaning: "نہایت رحم والا" },
+    { name: "الملك", transliteration: "Al-Malik", ur_meaning: "بادشاہ" },
+    { name: "القدوس", transliteration: "Al-Quddus", ur_meaning: "پاک ذات" },
+    { name: "السلام", transliteration: "As-Salam", ur_meaning: "امن دینے والا" },
+    { name: "المؤمن", transliteration: "Al-Mu’min", ur_meaning: "امن عطا کرنے والا" },
+    { name: "المهيمن", transliteration: "Al-Muhaymin", ur_meaning: "نگہبان" },
+    { name: "العزيز", transliteration: "Al-Azeez", ur_meaning: "غالب" },
+    { name: "الجبار", transliteration: "Al-Jabbar", ur_meaning: "زبردست" },
+    { name: "المتكبر", transliteration: "Al-Mutakabbir", ur_meaning: "بزرگی والا" },
+    { name: "الخالق", transliteration: "Al-Khaliq", ur_meaning: "پیدا کرنے والا" },
+    { name: "البارئ", transliteration: "Al-Bari", ur_meaning: "بنانے والا" },
+    { name: "المصور", transliteration: "Al-Musawwir", ur_meaning: "صورت دینے والا" },
+    { name: "الغفار", transliteration: "Al-Ghaffar", ur_meaning: "بخشنے والا" },
+    { name: "القهار", transliteration: "Al-Qahhar", ur_meaning: "غلبہ والا" },
+    { name: "الوهاب", transliteration: "Al-Wahhab", ur_meaning: "عطا کرنے والا" },
+    { name: "الرزاق", transliteration: "Ar-Razzaq", ur_meaning: "رزق دینے والا" },
+    { name: "الفتاح", transliteration: "Al-Fattah", ur_meaning: "فتح دینے والا" },
+    { name: "العليم", transliteration: "Al-Aleem", ur_meaning: "سب کچھ جاننے والا" },
+    { name: "القابض", transliteration: "Al-Qabid", ur_meaning: "تنگ کرنے والا" },
+    { name: "الباسط", transliteration: "Al-Basit", ur_meaning: "کشادہ کرنے والا" },
+    { name: "الخافض", transliteration: "Al-Khafid", ur_meaning: "نیچا کرنے والا" },
+    { name: "الرافع", transliteration: "Ar-Rafi", ur_meaning: "بلند کرنے والا" },
+    { name: "المعز", transliteration: "Al-Mu’izz", ur_meaning: "عزت دینے والا" },
+    { name: "المذل", transliteration: "Al-Muzil", ur_meaning: "ذلت دینے والا" },
+    { name: "السميع", transliteration: "As-Sami", ur_meaning: "سننے والا" },
+    { name: "البصير", transliteration: "Al-Baseer", ur_meaning: "دیکھنے والا" },
+    { name: "الحكم", transliteration: "Al-Hakam", ur_meaning: "فیصلہ کرنے والا" },
+    { name: "العدل", transliteration: "Al-Adl", ur_meaning: "انصاف کرنے والا" },
+    { name: "اللطيف", transliteration: "Al-Lateef", ur_meaning: "نرمی کرنے والا" },
+    { name: "الخبير", transliteration: "Al-Khabeer", ur_meaning: "باخبر" },
+    { name: "الحليم", transliteration: "Al-Haleem", ur_meaning: "بردبار" },
+    { name: "العظيم", transliteration: "Al-Azeem", ur_meaning: "عظمت والا" },
+    { name: "الغفور", transliteration: "Al-Ghafoor", ur_meaning: "معاف کرنے والا" },
+    { name: "الشكور", transliteration: "Ash-Shakoor", ur_meaning: "قدر دان" },
+    { name: "العلي", transliteration: "Al-Ali", ur_meaning: "بلند مرتبہ والا" },
+    { name: "الكبير", transliteration: "Al-Kabeer", ur_meaning: "بڑا" },
+    { name: "الحفيظ", transliteration: "Al-Hafeez", ur_meaning: "نگہبان" },
+    { name: "المقيت", transliteration: "Al-Muqeet", ur_meaning: "رزق دینے والا" },
+    { name: "الحسيب", transliteration: "Al-Haseeb", ur_meaning: "حساب لینے والا" },
+    { name: "الجليل", transliteration: "Al-Jaleel", ur_meaning: "عظمت والا" },
+    { name: "الكريم", transliteration: "Al-Kareem", ur_meaning: "کرم کرنے والا" },
+    { name: "الرقيب", transliteration: "Ar-Raqeeb", ur_meaning: "نگہبان" },
+    { name: "المجيب", transliteration: "Al-Mujib", ur_meaning: "دعا قبول کرنے والا" },
+    { name: "الواسع", transliteration: "Al-Wasi", ur_meaning: "وسعت والا" },
+    { name: "الحكيم", transliteration: "Al-Hakeem", ur_meaning: "حکمت والا" },
+    { name: "الودود", transliteration: "Al-Wadood", ur_meaning: "محبت کرنے والا" },
+    { name: "المجيد", transliteration: "Al-Majeed", ur_meaning: "عزت والا" },
+    { name: "الباعث", transliteration: "Al-Ba’ith", ur_meaning: "دوبارہ اٹھانے والا" },
+    { name: "الشهيد", transliteration: "Ash-Shaheed", ur_meaning: "گواہ" },
+    { name: "الحق", transliteration: "Al-Haqq", ur_meaning: "حق" },
+    { name: "الوكيل", transliteration: "Al-Wakeel", ur_meaning: "کارساز" },
+    { name: "القوي", transliteration: "Al-Qawiyy", ur_meaning: "طاقتور" },
+    { name: "المتين", transliteration: "Al-Mateen", ur_meaning: "مضبوط" },
+    { name: "الولي", transliteration: "Al-Waliyy", ur_meaning: "مددگار" },
+    { name: "الحميد", transliteration: "Al-Hameed", ur_meaning: "قابل تعریف" },
+    { name: "المحصي", transliteration: "Al-Muhsi", ur_meaning: "شمار کرنے والا" },
+    { name: "المبدئ", transliteration: "Al-Mubdi", ur_meaning: "شروع کرنے والا" },
+    { name: "المعيد", transliteration: "Al-Mu’id", ur_meaning: "لوٹانے والا" },
+    { name: "المحيي", transliteration: "Al-Muhyi", ur_meaning: "زندگی دینے والا" },
+    { name: "المميت", transliteration: "Al-Mumeet", ur_meaning: "موت دینے والا" },
+    { name: "الحي", transliteration: "Al-Hayy", ur_meaning: "ہمیشہ زندہ" },
+    { name: "القيوم", transliteration: "Al-Qayyum", ur_meaning: "ہمیشہ قائم" },
+    { name: "الواجد", transliteration: "Al-Wajid", ur_meaning: "پانے والا" },
+    { name: "الماجد", transliteration: "Al-Majid", ur_meaning: "عظمت والا" },
+    { name: "الواحد", transliteration: "Al-Wahid", ur_meaning: "ایک" },
+    { name: "الاحد", transliteration: "Al-Ahad", ur_meaning: "واحد" },
+    { name: "الصمد", transliteration: "As-Samad", ur_meaning: "بے نیاز" },
+    { name: "القادر", transliteration: "Al-Qadir", ur_meaning: "قدرت والا" },
+    { name: "المقتدر", transliteration: "Al-Muqtadir", ur_meaning: "زور آور" },
+    { name: "المقدم", transliteration: "Al-Muqaddim", ur_meaning: "آگے کرنے والا" },
+    { name: "المؤخر", transliteration: "Al-Mu’akhkhir", ur_meaning: "پیچھے کرنے والا" },
+    { name: "الأول", transliteration: "Al-Awwal", ur_meaning: "پہلا" },
+    { name: "الآخر", transliteration: "Al-Akhir", ur_meaning: "آخری" },
+    { name: "الظاهر", transliteration: "Az-Zahir", ur_meaning: "ظاہر" },
+    { name: "الباطن", transliteration: "Al-Batin", ur_meaning: "پوشیدہ" },
+    { name: "الوالي", transliteration: "Al-Wali", ur_meaning: "حاکم" },
+    { name: "المتعالي", transliteration: "Al-Muta’ali", ur_meaning: "سب سے بلند" },
+    { name: "البر", transliteration: "Al-Barr", ur_meaning: "نیکی کرنے والا" },
+    { name: "التواب", transliteration: "At-Tawwab", ur_meaning: "توبہ قبول کرنے والا" },
+    { name: "المنتقم", transliteration: "Al-Muntaqim", ur_meaning: "بدلہ لینے والا" },
+    { name: "العفو", transliteration: "Al-Afuww", ur_meaning: "معاف کرنے والا" },
+    { name: "الرؤوف", transliteration: "Ar-Ra’uf", ur_meaning: "نہایت مہربان" },
+    { name: "مالك الملك", transliteration: "Malik-ul-Mulk", ur_meaning: "بادشاہت کا مالک" },
+    { name: "ذو الجلال والإكرام", transliteration: "Dhul-Jalal-wal-Ikram", ur_meaning: "جلال اور عزت والا" },
+    { name: "المقسط", transliteration: "Al-Muqsit", ur_meaning: "انصاف کرنے والا" },
+    { name: "الجامع", transliteration: "Al-Jami", ur_meaning: "جمع کرنے والا" },
+    { name: "الغني", transliteration: "Al-Ghani", ur_meaning: "بے نیاز" },
+    { name: "المغني", transliteration: "Al-Mughni", ur_meaning: "غنیمت دینے والا" },
+    { name: "المانع", transliteration: "Al-Mani", ur_meaning: "روکنے والا" },
+    { name: "الضار", transliteration: "Ad-Darr", ur_meaning: "نقصان پہنچانے والا" },
+    { name: "النافع", transliteration: "An-Nafi", ur_meaning: "نفع دینے والا" },
+    { name: "النور", transliteration: "An-Nur", ur_meaning: "نور" },
+    { name: "الهادي", transliteration: "Al-Hadi", ur_meaning: "ہدایت دینے والا" },
+    { name: "البديع", transliteration: "Al-Badi", ur_meaning: "عجائب پیدا کرنے والا" },
+    { name: "الباقي", transliteration: "Al-Baqi", ur_meaning: "ہمیشہ رہنے والا" },
+    { name: "الوارث", transliteration: "Al-Warith", ur_meaning: "وارث" },
+    { name: "الرشيد", transliteration: "Ar-Rashid", ur_meaning: "ہدایت دینے والا" },
+    { name: "الصبور", transliteration: "As-Sabur", ur_meaning: "صبر کرنے والا" },
 ];
 
-function loadDuaContent() {
-    const categories = [...new Set(allContent.map(item => item.category))];
-    duaCategoriesContainer.innerHTML = '';
-    categories.forEach(category => {
-        const button = document.createElement('button');
-        button.className = 'category-button';
-        button.textContent = category;
-        button.addEventListener('click', () => {
-            document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            filterContent(category);
-        });
-        duaCategoriesContainer.appendChild(button);
-    });
+const allContent = [
+    // 6 کلمے
+    { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔", reference: "صحیح بخاری" },
+    { category: "6 کلمے", arabic: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", translation: "میں گواہی دیتا ہوں کہ کوئی معبود نہیں سوائے اللہ کے، اور میں گواہی دیتا ہوں کہ محمد صلی اللہ علیہ وسلم اس کے بندے اور رسول ہیں۔", reference: "صحیح مسلم" },
+    { category: "6 کلمے", arabic: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ", translation: "اللہ پاک ہے، تمام تعریفیں اللہ کے لیے ہیں، کوئی معبود نہیں سوائے اللہ کے، اور اللہ سب سے بڑا ہے۔", reference: "صحیح بخاری" },
+    { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "کوئی معبود نہیں سوائے اللہ کے، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہی ہے اور اسی کے لیے حمد ہے، وہ زندہ کرتا ہے اور مارتا ہے، اور وہ ہر چیز پر قادر ہے۔", reference: "صحیح مسلم" },
+    { category: "6 کلمے", arabic: "أَسْتَغْفِرُ اللَّهَ رَبِّي مِنْ كُلِّ ذَنْبٍ وَأَتُوبُ إِلَيْهِ", translation: "میں اپنے رب اللہ سے ہر گناہ کی مغفرت مانگتا ہوں اور اس کی طرف توبہ کرتا ہوں۔", reference: "صحیح بخاری" },
+    { category: "6 کلمے", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ أَنْ أُشْرِكَ بِكَ شَيْئًا وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس سے کہ میں جانتے ہوئے تیرے ساتھ کسی کو شریک کروں، اور اس کے لیے مغفرت مانگتا ہوں جو میں نہیں جانتا۔", reference: "ابو داؤد" },
 
-    if (duaCategoriesContainer.firstChild) {
-        duaCategoriesContainer.firstChild.classList.add('active');
-        filterContent(categories[0]);
-    }
-}
-
-function filterContent(category) {
-    const items = allContent.filter(item => item.category === category);
-    duaListContainer.innerHTML = '';
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'dua-card';
-        card.innerHTML = `<p class="dua-arabic">${item.arabic}</p><p class="dua-translation">${item.translation}</p>`;
-        duaListContainer.appendChild(card);
-    });
-}
-
-function displayNames(names) {
-    namesContainer.innerHTML = '';
-    names.forEach(name => {
-        const nameCard = document.createElement('div');
-        nameCard.className = 'name-card';
-        nameCard.innerHTML = `<p class="name-arabic">${name.name}</p><p class="name-translation">${name.transliteration} - ${name.ur_meaning}</p>`;
-        namesContainer.appendChild(nameCard);
-    });
-}
-
-showNamesBtn.addEventListener('click', () => openModal('names-modal'));
-
-// --- Modal & Menu Links ---
-function openModal(modalId) {
-    closeAllModals();
-    document.getElementById(modalId).style.display = 'flex';
-    if (modalId === 'names-modal' && namesContainer.innerHTML === '') {
-        displayNames(namesData);
-    }
-}
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
-}
-
-rateAppLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
-shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
-
-// --- Initial Load ---
-document.addEventListener('DOMContentLoaded', () => {
-    showPage('homeCustomPage');
-    fetchSurahList();
-    updateTarget();
-    loadDuaContent();
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            getPrayerTimes(position.coords.latitude, position.coords.longitude);
-        }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
-    } else {
-        prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
-    }
-    showRandomAyah();
-    setInterval(showRandomAyah, 600000);
-});
-
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed:', err));
-    });
-}
+    // 50 دعائیں
+    { category: "50 دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "رَبَّنَا آتِنَا فِی الدُّنْیَا حَسَنَةً وَّفِی الْآخِرَةِ حَسَنَةً وَّقِنَا عَذَابَ النَّارِ", translation: "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما اور آخرت میں بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔", reference: "البقرہ: 201" },
+    { category: "50 دعائیں", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", translation: "میں اللہ کے کامل کلمات کے ساتھ اس شر سے پناہ مانگتا ہوں جو اس نے پیدا کیا۔", reference: "صحیح مسلم" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ", translation: "اے اللہ! میں تجھ سے جنت مانگتا ہوں اور دوزخ سے پناہ مانگتا ہوں۔", reference: "ابو داؤد" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ", translation: "اے اللہ! میرے تمام گناہ معاف فرما، چھوٹے اور بڑے۔", reference: "صحیح مسلم" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ", translation: "اے اللہ! میں تیری نعمت کے زوال سے تیری پناہ مانگتا ہوں۔", reference: "بخاری" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا", translation: "اے اللہ! میں تجھ سے نفع بخش علم، پاکیزہ رزق اور قبول ہونے والا عمل مانگتا ہوں۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ", translation: "اے میرے رب! مجھے اور میری اولاد کو نماز قائم کرنے والا بنا اور ہماری دعا قبول فرما۔", reference: "ابراہیم: 40" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں غم اور فکر سے۔", reference: "بخاری" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ بَارِكْ لَنَا فِي أَرْزَاقِنَا", translation: "اے اللہ! ہمارے رزق میں برکت عطا فرما۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا", translation: "اے اللہ! میرے دل میں نور عطا فرما۔", reference: "صحیح مسلم" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ هُدًى وَتُقًى وَعَفَافًا وَغِنًى", translation: "اے اللہ! میں تجھ سے ہدایت، تقویٰ، پاکدامنی اور غنا مانگتا ہوں۔", reference: "صحیح مسلم" },
+    { category: "50 دعائیں", arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ", translation: "اے میرے رب! مجھے اور میرے والدین کو معاف فرما۔", reference: "نوح: 28" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عِلْمٍ لَا يَنْفَعُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس علم سے جو نفع نہ دے۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ ارْزُقْنِي حُبَّكَ وَحُبَّ مَنْ يُحِبُّكَ", translation: "اے اللہ! مجھے تیری محبت اور اس کی محبت عطا فرما جو تجھے محبت کرتا ہے۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ رِزْقًا وَاسِعًا", translation: "اے اللہ! میں تجھ سے وسیع رزق مانگتا ہوں۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ يَسِّرْ لِي خَيْرًا حَيْثُ كَانَ", translation: "اے اللہ! میرے لیے خیر کو آسان کر دے جہاں بھی ہو۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ فِتْنَةِ النَّارِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں دوزخ کی فتنہ سے۔", reference: "ابو داؤد" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي شَكُورًا", translation: "اے اللہ! مجھے شکر گزار بنا۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْمَغْفِرَةَ", translation: "اے اللہ! میں تجھ سے معافی اور بخشش مانگتا ہوں۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "رَبِّ هَبْ لِي حُكْمًا وَأَلْحِقْنِي بِالصَّالِحِينَ", translation: "اے میرے رب! مجھے حکمت عطا فرما اور مجھے نیک لوگوں میں شامل کر۔", reference: "الشعراء: 83" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ جَارٍ سُوءٍ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں برے پڑوسی سے۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَسْأَلَةِ", translation: "اے اللہ! میں تجھ سے بہترین دعا مانگتا ہوں۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ النَّفْسِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں نفس کے شر سے۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ", translation: "اے اللہ! میری مدد فرما تیرے ذکر اور شکر میں۔", reference: "ابو داؤد" },
+    { category: "50 دعائیں", arabic: "رَبِّ زِدْنِي عِلْمًا", translation: "اے میرے رب! مجھے علم میں اضافہ فرما۔", reference: "طہ: 114" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْجُبْنِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں بزدلی سے۔", reference: "بخاری" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْفِرْدَوْسَ الأَعْلَى", translation: "اے اللہ! میں تجھ سے جنت الفردوس مانگتا ہوں۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفَقْرِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں غربت سے۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ", translation: "اے اللہ! مجھے توبہ کرنے والوں میں سے بنا۔", reference: "ترمذی" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ صِحَّةً فِي إِيمَانٍ", translation: "اے اللہ! میں تجھ سے ایمان میں صحت مانگتا ہوں۔", reference: "ابن ماجہ" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں

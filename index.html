@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>القرآن الكريم - Faraz AI</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
     <div id="side-menu" class="side-menu">
         <ul>
-            <li><a href="#" data-page="homeCustomPage" class="nav-button">ہوم</a></li>
-            <li><a href="#" data-page="quranPage" class="nav-button">قرآن</a></li>
-            <li><a href="#" data-page="duaPage" class="nav-button">دعائیں</a></li>
-            <li><a href="#" data-page="hadithPage" class="nav-button">احادیث</a></li>
-            <li><a href="#" data-page="kalmaPage" class="nav-button">6 کلمے</a></li>
-            <li><a href="#" data-page="tasbihPage" class="nav-button">تسبیح</a></li>
-            <li><a href="#" data-page="chatPage" class="nav-button">AI چیت</a></li>
+            <li><a href="#" data-page="home" class="nav-button">ہوم</a></li>
+            <li><a href="#" data-page="quran" class="nav-button">قرآن</a></li>
+            <li><a href="#" data-page="dua" class="nav-button">دعائیں</a></li>
+            <li><a href="#" data-page="hadith" class="nav-button">احادیث</a></li>
+            <li><a href="#" data-page="kalma" class="nav-button">6 کلمے</a></li>
+            <li><a href="#" data-page="tasbih" class="nav-button">تسبیح</a></li>
+            <li><a href="#" data-page="chat" class="nav-button">AI چیت</a></li>
             <li><a href="#" id="rate-app-link">ایپ ریٹ کریں</a></li>
             <li><a href="#" id="share-app-link">ایپ شیئر کریں</a></li>
         </ul>
@@ -25,48 +26,48 @@
 
     <div id="menu-button" class="menu-button visible">☰</div>
 
-    <div class="page active" id="homeCustomPage">
-        <div class="background-art"></div>
-        <div id="header-title" class="header-title" style="font-size: 2em; color: gold; text-shadow: 2px 2px 4px #000;">Amiri Phone</div>
-        <div id="daily-ayah-container" class="home-section animated fadeIn"></div>
-        <div id="prayer-times-container" class="home-section animated slideIn"></div>
-        <div id="daily-dua-container" class="home-section animated fadeIn"></div>
-        <div id="qibla-compass" class="home-section animated rotateIn"></div>
-        <div id="prayer-tracker" class="home-section animated slideIn"></div>
-        <div id="tasbih-widget" class="home-section animated bounceIn"></div>
-        <div id="islamic-calendar" class="home-section animated fadeIn"></div>
-        <div id="audio-player" class="home-section animated zoomIn"></div>
-        <div id="updates-section" class="home-section animated slideIn"></div>
+    <div class="page active" id="home">
+        <h1 style="display: none;">القرآن الكريم</h1>
+        <div id="daily-ayah-container" class="home-section"></div>
+        <div id="prayer-times-container" class="home-section"></div>
+        <div id="daily-dua-container" class="home-section"></div>
+        <div id="names-display" class="home-section" style="font-size: 2em; color: gold; text-shadow: 2px 2px 4px #000;">بسم الله الرحمن الرحيم</div>
+        <div id="qibla-compass" class="home-section"></div>
+        <div id="prayer-tracker" class="home-section"></div>
+        <div id="tasbih-widget" class="home-section"></div>
+        <div id="islamic-calendar" class="home-section"></div>
+        <div id="audio-player" class="home-section"></div>
+        <div id="updates-section" class="home-section"></div>
     </div>
 
-    <div class="page" id="quranPage">
+    <div class="page" id="quran">
         <h1>قرآن پاک</h1>
         <ul id="surah-list"></ul>
     </div>
 
-    <div class="page" id="surahDetailPage">
+    <div class="page" id="surahDetail">
         <h1 id="surahHeader"></h1>
         <div id="surahContainer"></div>
         <audio id="mainAudioPlayer" controls></audio>
     </div>
 
-    <div class="page" id="duaPage">
+    <div class="page" id="dua">
         <h1>دعائیں</h1>
         <div id="dua-categories"></div>
         <div id="dua-list"></div>
     </div>
 
-    <div class="page" id="hadithPage">
+    <div class="page" id="hadith">
         <h1>احادیث</h1>
         <div id="hadith-list"></div>
     </div>
 
-    <div class="page" id="kalmaPage">
+    <div class="page" id="kalma">
         <h1>6 کلمے</h1>
         <div id="kalma-list"></div>
     </div>
 
-    <div class="page" id="tasbihPage">
+    <div class="page" id="tasbih">
         <h1>تسبیح</h1>
         <div id="tasbih-counter">0</div>
         <div id="tasbih-bead" class="tasbih-bead"></div>
@@ -75,7 +76,7 @@
         <div id="target-display"></div>
     </div>
 
-    <div class="page" id="chatPage">
+    <div class="page" id="chat">
         <h1>AI چیت</h1>
         <div id="chat-messages"></div>
         <input type="text" id="chat-input" placeholder="سوال پوچھیں...">
@@ -88,6 +89,14 @@
             <h2>اللہ کے 99 نام</h2>
             <div id="names-container"></div>
         </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="#" data-page="quran" class="nav-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/quran.png" alt="Quran"></a>
+        <a href="#" data-page="chat" class="nav-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png" alt="AI"></a>
+        <a href="#" data-page="home" class="nav-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" alt="Home"></a>
+        <a href="#" data-page="tasbih" class="nav-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/prayer-beads.png" alt="Tasbih"></a>
+        <a href="#" data-page="dua" class="nav-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/pray.png" alt="Dua"></a>
     </div>
 
     <script src="script.js"></script>

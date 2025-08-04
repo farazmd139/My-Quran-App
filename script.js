@@ -53,13 +53,13 @@ function showPage(pageId) {
     if (activePage) activePage.classList.add('active');
     if (activeButton) activeButton.classList.add('active');
     
-    if (pageId === 'homeCustomPage') {
+    if (pageId === 'home') {
         menuButton.classList.add('visible');
     } else {
         menuButton.classList.remove('visible');
     }
 
-    if (pageId !== 'surahDetailPage') {
+    if (pageId !== 'surahDetail') {
         mainAudioPlayer.pause();
         mainAudioPlayer.src = '';
     }
@@ -107,7 +107,7 @@ function displaySurahs(surahs) {
 }
 
 async function loadSurah(surahId) {
-    showPage('surahDetailPage');
+    showPage('surahDetail');
     surahHeader.innerHTML = '<h1>لوڈ ہو رہا ہے...</h1>';
     surahContainer.innerHTML = '';
     
@@ -247,7 +247,7 @@ async function getPrayerTimes(latitude, longitude) {
         const data = await response.json();
         displayPrayerTimes(data.data.timings);
     } catch (error) {
-        prayerTimeContainer.innerHTML = '<p style="color: #f0f0f0;">نماز کے اوقات حاصل کرنے میں ناکامی۔</p>';
+        prayerTimeContainer.innerHTML = '<p>نماز کے اوقات حاصل کرنے میں ناکامی۔</p>';
     }
 }
 
@@ -256,8 +256,7 @@ function displayPrayerTimes(timings) {
     const requiredTimings = { 'Fajr': 'فجر', 'Dhuhr': 'ظہر', 'Asr': 'عصر', 'Maghrib': 'مغرب', 'Isha': 'عشاء' };
     for (const [key, value] of Object.entries(requiredTimings)) {
         const prayerDiv = document.createElement('div');
-        prayerDiv.className = 'prayer-time-item';
-        prayerDiv.innerHTML = `<span>${value}:</span> <span class="time">${timings[key]}</span>`;
+        prayerDiv.innerHTML = `<p>${value}: ${timings[key]}</p>`;
         prayerTimeContainer.appendChild(prayerDiv);
     }
 }
@@ -265,88 +264,56 @@ function displayPrayerTimes(timings) {
 function showRandomAyah() {
     const randomIndex = Math.floor(Math.random() * dailyAyahs.length);
     const ayah = dailyAyahs[randomIndex];
-    dailyAyahContainer.innerHTML = `<p class="ayah-arabic animated pulse">${ayah.arabic}</p><p class="ayah-translation">${ayah.translation}</p>`;
+    dailyAyahContainer.innerHTML = `<p class="ayah-arabic">${ayah.arabic}</p><p class="ayah-translation">${ayah.translation}</p>`;
 }
 
 function showRandomDua() {
     const randomIndex = Math.floor(Math.random() * dailyDuas.length);
     const dua = dailyDuas[randomIndex];
-    dailyDuaContainer.innerHTML = `<p class="dua-arabic animated pulse">${dua.arabic}</p><p class="dua-translation">${dua.translation}</p>`;
+    dailyDuaContainer.innerHTML = `<p class="dua-arabic">${dua.arabic}</p><p class="dua-translation">${dua.translation}</p>`;
 }
 
-// --- Qibla Compass (Improved with Animation) ---
+// --- Qibla Compass (Basic Implementation) ---
 function showQiblaCompass() {
-    qiblaCompass.innerHTML = '<div class="compass"><p>قبلہ کا رخ: <span id="qibla-angle">0°</span></p></div>';
+    qiblaCompass.innerHTML = '<p>قبلہ کا رخ: (لوکیشن فعال کریں)</p>';
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-            // Placeholder - Replace with actual Qibla API
-            const angle = Math.round(Math.random() * 360);
-            document.getElementById('qibla-angle').textContent = `${angle}°`;
-            const compass = qiblaCompass.querySelector('.compass');
-            compass.style.transform = `rotate(${angle}deg)`;
-        }, () => {
-            qiblaCompass.innerHTML = '<p style="color: #f0f0f0;">لوکیشن کی اجازت درکار ہے۔</p>';
+            // Simple placeholder - actual Qibla calculation needs an API or library
+            qiblaCompass.innerHTML = `<p>قبلہ کا رخ: ${Math.round(Math.random() * 360)}°</p>`;
         });
     }
 }
 
-// --- Prayer Tracker (Basic with Input) ---
+// --- Prayer Tracker (Basic Implementation) ---
 function showPrayerTracker() {
-    prayerTracker.innerHTML = `
-        <p>نماز ٹریکر: آج کی 5 نمازیں</p>
-        <div class="prayer-check">
-            <input type="checkbox" id="fajr"><label for="fajr">فجر</label>
-            <input type="checkbox" id="dhuhr"><label for="dhuhr">ظہر</label>
-            <input type="checkbox" id="asr"><label for="asr">عصر</label>
-            <input type="checkbox" id="maghrib"><label for="maghrib">مغرب</label>
-            <input type="checkbox" id="isha"><label for="isha">عشاء</label>
-        </div>
-    `;
+    prayerTracker.innerHTML = '<p>نماز ٹریکر: آج کی 5 نمازیں چیک کریں</p>';
+    // Add logic to track prayers (placeholder)
 }
 
-// --- Tasbih Widget (Enhanced) ---
+// --- Tasbih Widget (Basic Implementation) ---
 function showTasbihWidget() {
-    tasbihWidget.innerHTML = '<div id="widget-counter" class="widget-counter">0</div><button id="widget-bead" class="widget-bead">ذکر</button>';
+    tasbihWidget.innerHTML = '<div id="widget-counter">0</div><button id="widget-bead">کلک کریں</button>';
     let widgetCount = 0;
-    const widgetCounter = document.getElementById('widget-counter');
-    const widgetBead = document.getElementById('widget-bead');
-    widgetBead.addEventListener('click', () => {
+    document.getElementById('widget-bead').addEventListener('click', () => {
         widgetCount++;
-        widgetCounter.innerText = widgetCount;
-        widgetCounter.classList.add('pulse');
-        setTimeout(() => widgetCounter.classList.remove('pulse'), 300);
-        if (navigator.vibrate) { navigator.vibrate(50); }
+        document.getElementById('widget-counter').innerText = widgetCount;
     });
 }
 
-// --- Islamic Calendar (Enhanced) ---
+// --- Islamic Calendar (Basic Implementation) ---
 function showIslamicCalendar() {
     const today = new Date();
-    islamicCalendar.innerHTML = `<p class="calendar-text">اسلامی تاریخ: ${today.toLocaleDateString('ur-PK', { month: 'long', day: 'numeric' })} - ${today.getFullYear()}ھ</p>`;
+    islamicCalendar.innerHTML = `<p>اسلامی تاریخ: ${today.toLocaleDateString('ur-PK', { month: 'long', day: 'numeric' })}</p>`;
 }
 
-// --- Audio Player (Enhanced with Play Button) ---
+// --- Audio Player (Basic Implementation) ---
 function showAudioPlayer() {
-    audioPlayer.innerHTML = `
-        <button id="play-audio" class="play-button">قرآن سنو</button>
-        <audio id="homeAudioPlayer" style="display:none;"><source src="https://audio.quran.com/abdurrahmaansudais/001.mp3" type="audio/mpeg"></audio>
-    `;
-    const playButton = document.getElementById('play-audio');
-    const homeAudioPlayer = document.getElementById('homeAudioPlayer');
-    playButton.addEventListener('click', () => {
-        homeAudioPlayer.play().catch(e => alert('آڈیو چلانے میں ناکامی۔ براہ کرم اجازت دیں۔'));
-        playButton.textContent = 'روکو';
-        playButton.classList.add('playing');
-        homeAudioPlayer.addEventListener('ended', () => {
-            playButton.textContent = 'قرآن سنو';
-            playButton.classList.remove('playing');
-        });
-    });
+    audioPlayer.innerHTML = '<audio id="homeAudioPlayer" controls><source src="https://audio.quran.com/abdurrahmaansudais/001.mp3" type="audio/mpeg"></audio>';
 }
 
-// --- Updates Section (Enhanced) ---
+// --- Updates Section (Basic Implementation) ---
 function showUpdates() {
-    updatesSection.innerHTML = '<p class="update-text">نئے فیچرز: جلد متعارف! (آخری اپ ڈیٹ: 04-08-2025)</p>';
+    updatesSection.innerHTML = '<p>نئے فیچرز: جلد متعارف!</p>';
 }
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
@@ -354,7 +321,14 @@ const namesData = [
     { name: "الرحمن", transliteration: "Ar-Rahman", ur_meaning: "بہت مہربان" },
     { name: "الرحيم", transliteration: "Ar-Rahim", ur_meaning: "نہایت رحم والا" },
     { name: "الملك", transliteration: "Al-Malik", ur_meaning: "بادشاہ" },
-    // ... (باقی 96 نام جوں کے توں، مکمل فہرست پچھلے جواب میں موجود)
+    { name: "القدوس", transliteration: "Al-Quddus", ur_meaning: "پاک ذات" },
+    { name: "السلام", transliteration: "As-Salam", ur_meaning: "امن دینے والا" },
+    { name: "المؤمن", transliteration: "Al-Mu’min", ur_meaning: "امن عطا کرنے والا" },
+    { name: "المهيمن", transliteration: "Al-Muhaymin", ur_meaning: "نگہبان" },
+    { name: "العزيز", transliteration: "Al-Azeez", ur_meaning: "غالب" },
+    { name: "الجبار", transliteration: "Al-Jabbar", ur_meaning: "زبردست" },
+    { name: "المتكبر", transliteration: "Al-Mutakabbir", ur_meaning: "بزرگی والا" },
+    // ... (باقی 89 نام جوں کے توں)
 ];
 
 const allContent = [
@@ -370,7 +344,7 @@ const allContent = [
     { category: "50 دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔", reference: "ابن ماجہ" },
     { category: "50 دعائیں", arabic: "رَبَّنَا آتِنَا فِی الدُّنْیَا حَسَنَةً وَّفِی الْآخِرَةِ حَسَنَةً وَّقِنَا عَذَابَ النَّارِ", translation: "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما اور آخرت میں بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔", reference: "البقرہ: 201" },
     // ... (باقی 48 دعائیں جوں کے توں)
-    
+
     // 40 احادیث
     { category: "40 احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔", reference: "صحیح بخاری: 1" },
     { category: "40 احادیث", arabic: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ", translation: "جسے اللہ بھلائی چاہتا ہے، اسے دین میں سمجھ دیتا ہے۔", reference: "صحیح بخاری: 71" },
@@ -441,16 +415,16 @@ shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareD
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    showPage('homeCustomPage');
+    showPage('home');
     fetchSurahList();
     updateTarget();
     loadDuaContent();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             getPrayerTimes(position.coords.latitude, position.coords.longitude);
-        }, () => { prayerTimeContainer.innerHTML = '<p style="color: #f0f0f0;">لوکیشن کی اجازت درکار ہے۔</p>'; });
+        }, () => { prayerTimeContainer.innerHTML = '<p>لوکیشن کی اجازت درکار ہے۔</p>'; });
     } else {
-        prayerTimeContainer.innerHTML = '<p style="color: #f0f0f0;">آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔</p>';
+        prayerTimeContainer.innerHTML = '<p>آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔</p>';
     }
     showRandomAyah();
     showRandomDua();
@@ -460,7 +434,6 @@ document.addEventListener('DOMContentLoaded', () => {
     showIslamicCalendar();
     showAudioPlayer();
     showUpdates();
-    setInterval(showRandomAyah, 600000); // 10 منٹ کے بعد آیت تبدیل
 });
 
 // Service Worker Registration

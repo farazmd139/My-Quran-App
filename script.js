@@ -1,5 +1,6 @@
-// --- Global Variables & API Key ---
-const GEMINI_API_KEY = 'AIzaSyDB4TUj3zsU90jCfI8L0yivvWIYipUtq3c';
+// --- Global Variables & API Keys ---
+const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // Replace with your Gemini API key
+const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your Google Maps API key
 
 // --- DOM Elements ---
 const pages = document.querySelectorAll('.page');
@@ -24,8 +25,18 @@ const duaListContainer = document.getElementById('dua-list');
 const namesContainer = document.getElementById('names-container');
 const showNamesBtn = document.getElementById('show-names-btn');
 const prayerTimeContainer = document.getElementById('prayer-times-container');
-const dailyAyahContainer = document.getElementById('daily-ayah-container');
 const prayerTimeLoader = document.getElementById('prayer-time-loader');
+const qiblaDirectionContainer = document.getElementById('qibla-direction-container');
+const qiblaLoader = document.getElementById('qibla-loader');
+const islamicDateContainer = document.getElementById('islamic-date-container');
+const islamicDateLoader = document.getElementById('islamic-date-loader');
+const duaOfTheDayContainer = document.getElementById('dua-of-the-day-container');
+const dailyAyahContainer = document.getElementById('daily-ayah-container');
+const aiShortcutBtn = document.getElementById('ai-shortcut-btn');
+const tasbihSummaryContainer = document.getElementById('tasbih-summary-container');
+const tasbihSummaryLoader = document.getElementById('tasbih-summary-loader');
+const islamicEventContainer = document.getElementById('islamic-event-container');
+const islamicEventLoader = document.getElementById('islamic-event-loader');
 const rateAppLink = document.getElementById('rate-app-link');
 const shareAppLink = document.getElementById('share-app-link');
 
@@ -47,7 +58,7 @@ function showPage(pageId) {
 
     if (activePage) activePage.classList.add('active');
     if (activeButton) activeButton.classList.add('active');
-    
+
     if (pageId === 'homeCustomPage') {
         menuButton.classList.add('visible');
     } else {
@@ -64,6 +75,7 @@ menuButton.addEventListener('click', () => {
     sideMenu.classList.toggle('open');
     menuOverlay.classList.toggle('open');
 });
+
 menuOverlay.addEventListener('click', () => {
     sideMenu.classList.remove('open');
     menuOverlay.classList.remove('open');
@@ -91,7 +103,7 @@ function displaySurahs(surahs) {
                 <span class="surah-number">${surah.id}</span>
                 <div class="surah-name-details">
                     <h3>${surah.name_simple}</h3>
-                    <p>${surah.translated_name.name} - ${surah.verses_count} آیات</p>
+                    <p>${surah.translated_name.name} - ${surah.verses_count} آیات</p>
                 </div>
             </div>
             <span class="surah-arabic-name">${surah.name_arabic}</span>
@@ -105,7 +117,7 @@ async function loadSurah(surahId) {
     showPage('surahDetailPage');
     surahHeader.innerHTML = '<h1>لوڈ ہو رہا ہے...</h1>';
     surahContainer.innerHTML = '';
-    
+
     try {
         const [versesRes, infoRes, audioRes] = await Promise.all([
             fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${surahId}`),
@@ -119,7 +131,7 @@ async function loadSurah(surahId) {
 
         const surahInfo = infoData.chapter;
         surahHeader.innerHTML = `${surahInfo.bismillah_pre ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}`;
-        
+
         mainAudioPlayer.src = audioData.audio_file.audio_url;
         mainAudioPlayer.play().catch(e => console.log("Autoplay prevented."));
 
@@ -130,7 +142,6 @@ async function loadSurah(surahId) {
             box.style.animationDelay = `-${index * 1.5}s`;
             surahContainer.appendChild(box);
         });
-
     } catch (error) {
         surahHeader.innerHTML = '<h1>سورہ لوڈ کرنے میں ناکامی</h1>';
     }
@@ -170,24 +181,30 @@ async function askGoogleAI(question) {
 
     try {
         const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
-        if (!response.ok) { throw new Error('Network response was not ok'); }
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         const aiResponse = data.candidates[0].content.parts[0].text;
         typingMessage.innerHTML = '';
         typingMessage.innerText = aiResponse;
     } catch (error) {
-        typingMessage.innerText = "معافی चाहता हूं, अभी मैं جواب نہیں دے سکتا۔";
+        typingMessage.innerHTML = '';
+        typingMessage.innerText = "معافی مانگتا ہوں، ابھی جواب نہیں دے سکتا۔";
     }
 }
 
 // --- Tasbih Functionality ---
 let count = 0;
 const tasbihat = [
-    { name: "سُبْحَانَ اللَّهِ", target: 33 }, { name: "الْحَمْدُ لِلَّهِ", target: 33 },
-    { name: "اللَّهُ أَكْبَرُ", target: 34 }, { name: "أَسْتَغْفِرُ اللَّهَ", target: 100 },
-    { name: "لَا إِلَهَ إِلَّا اللَّهُ", target: 100 }, { name: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", target: 100 },
-    { name: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", target: 100 }, { name: "سُبْحَانَ اللَّهِ الْعَظِيمِ", target: 100 },
-    { name: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", target: 100 }, { name: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ", target: 100 }
+    { name: "سُبْحَانَ اللَّهِ", target: 33 },
+    { name: "الْحَمْدُ لِلَّهِ", target: 33 },
+    { name: "اللَّهُ أَكْبَرُ", target: 34 },
+    { name: "أَسْتَغْفِرُ اللَّهَ", target: 100 },
+    { name: "لَا إِلَهَ إِلَّا اللَّهُ", target: 100 },
+    { name: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", target: 100 },
+    { name: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", target: 100 },
+    { name: "سُبْحَانَ اللَّهِ الْعَظِيمِ", target: 100 },
+    { name: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", target: 100 },
+    { name: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ", target: 100 }
 ];
 
 tasbihat.forEach(tasbih => {
@@ -224,27 +241,46 @@ resetButton.addEventListener('click', () => {
 
 // --- Home Page Functionality ---
 const dailyAyahs = [
-    { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", translation: "پس تم اپنے رب کی کون کون سی نعمتوں کو جھٹلاؤ گے؟" },
-    { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", translation: "بے شک ہر مشکل کے ساتھ آسانی ہے۔" },
-    { arabic: "وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", translation: "اور جو اللہ پر بھروسہ کرتا ہے، تو وہ اس کے لیے کافی ہے۔" }
+    { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", translation: "پس تم اپنے رب کی کون کون سی نعمتوں کو جھٹلاؤ گے؟", reference: "سورہ الرحمن: 13" },
+    { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", translation: "بے شک ہر مشکل کے ساتھ آسانی ہے۔", reference: "سورہ الشرح: 6" },
+    { arabic: "وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", translation: "اور جو اللہ پر بھروسہ کرتا ہے، تو وہ اس کے لیے کافی ہے۔", reference: "سورہ الطلاق: 3" }
 ];
+
+async function getCityName(latitude, longitude) {
+    try {
+        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`);
+        const data = await response.json();
+        if (data.status === 'OK') {
+            const city = data.results.find(result => result.types.includes('locality'));
+            return city ? city.formatted_address : 'نامعلوم شہر';
+        }
+        return 'نامعلوم شہر';
+    } catch (error) {
+        return 'نامعلوم شہر';
+    }
+}
 
 async function getPrayerTimes(latitude, longitude) {
     try {
+        const cityName = await getCityName(latitude, longitude);
         const date = new Date();
         const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
         const response = await fetch(`https://api.aladhan.com/v1/timings/${formattedDate}?latitude=${latitude}&longitude=${longitude}&method=2`);
         const data = await response.json();
-        displayPrayerTimes(data.data.timings);
+        if (data.code === 200) {
+            displayPrayerTimes(data.data.timings, cityName);
+        } else {
+            prayerTimeLoader.textContent = "نماز کے اوقات حاصل کرنے میں ناکامی۔";
+        }
     } catch (error) {
         prayerTimeLoader.textContent = "نماز کے اوقات حاصل کرنے میں ناکامی۔";
     }
 }
 
-function displayPrayerTimes(timings) {
+function displayPrayerTimes(timings, cityName) {
     prayerTimeLoader.style.display = 'none';
     const requiredTimings = { 'Fajr': 'فجر', 'Dhuhr': 'ظہر', 'Asr': 'عصر', 'Maghrib': 'مغرب', 'Isha': 'عشاء' };
-    prayerTimeContainer.innerHTML = '';
+    prayerTimeContainer.innerHTML = `<p style="font-size: 1.2rem; margin-bottom: 10px;">شہر: ${cityName}</p>`;
     for (const [key, value] of Object.entries(requiredTimings)) {
         const prayerDiv = document.createElement('div');
         prayerDiv.className = 'prayer-time';
@@ -253,10 +289,87 @@ function displayPrayerTimes(timings) {
     }
 }
 
+async function getQiblaDirection(latitude, longitude) {
+    try {
+        const response = await fetch(`https://api.aladhan.com/v1/qibla/${latitude}/${longitude}`);
+        const data = await response.json();
+        if (data.code === 200) {
+            qiblaLoader.style.display = 'none';
+            qiblaDirectionContainer.innerHTML = `
+                <div class="qibla-compass"></div>
+                <p>قبلہ کی سمت: ${data.data.direction.toFixed(2)}°</p>
+            `;
+        } else {
+            qiblaLoader.textContent = "قبلہ کی سمت حاصل کرنے میں ناکامی۔";
+        }
+    } catch (error) {
+        qiblaLoader.textContent = "قبلہ کی سمت حاصل کرنے میں ناکامی۔";
+    }
+}
+
+async function getIslamicDate(latitude, longitude) {
+    try {
+        const date = new Date();
+        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+        const response = await fetch(`https://api.aladhan.com/v1/gToH/${formattedDate}`);
+        const data = await response.json();
+        if (data.code === 200) {
+            islamicDateLoader.style.display = 'none';
+            const hijri = data.data.hijri;
+            islamicDateContainer.innerHTML = `<p>${hijri.day} ${hijri.month.ar} ${hijri.year} ہجری</p>`;
+        } else {
+            islamicDateLoader.textContent = "اسلامی تاریخ حاصل کرنے میں ناکامی۔";
+        }
+    } catch (error) {
+        islamicDateLoader.textContent = "اسلامی تاریخ حاصل کرنے میں ناکامی۔";
+    }
+}
+
 function showRandomAyah() {
     const randomIndex = Math.floor(Math.random() * dailyAyahs.length);
     const ayah = dailyAyahs[randomIndex];
-    dailyAyahContainer.innerHTML = `<p class="ayah-arabic">${ayah.arabic}</p><p class="ayah-translation">${ayah.translation}</p>`;
+    dailyAyahContainer.innerHTML = `
+        <p class="ayah-arabic">${ayah.arabic}</p>
+        <p class="ayah-translation">${ayah.translation}${ayah.reference ? ` (${ayah.reference})` : ''}</p>
+    `;
+}
+
+function showDuaOfTheDay() {
+    const duas = allContent.filter(item => item.category === "50 دعائیں");
+    if (duas.length === 0) {
+        duaOfTheDayContainer.innerHTML = `<p>دعائیں لوڈ کرنے میں ناکامی۔</p>`;
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * duas.length);
+    const dua = duas[randomIndex];
+    duaOfTheDayContainer.innerHTML = `
+        <p class="dua-arabic">${dua.arabic}</p>
+        <p class="dua-translation">${dua.translation}${dua.reference ? ` (${dua.reference})` : ''}</p>
+    `;
+}
+
+aiShortcutBtn.addEventListener('click', () => {
+    showPage('aiPage');
+});
+
+function showTasbihSummary() {
+    const lastTasbih = tasbihSelect.options[tasbihSelect.selectedIndex]?.text || "سُبْحَانَ اللَّهِ";
+    const lastCount = count || 0;
+    tasbihSummaryLoader.style.display = 'none';
+    tasbihSummaryContainer.innerHTML = `<p class="summary-text">آخری تسبیح: ${lastTasbih} (${lastCount}/${tasbihSelect.value})</p>`;
+}
+
+function showIslamicEventCountdown() {
+    const ramadan2026 = new Date('2026-03-05T00:00:00Z'); // Example: Ramadan 1447 AH
+    const now = new Date();
+    const timeDiff = ramadan2026 - now;
+    if (timeDiff > 0) {
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        islamicEventLoader.style.display = 'none';
+        islamicEventContainer.innerHTML = `<p class="event-countdown">اگلا ایونٹ: رمضان 1447 ہجری (${days} دن باقی)</p>`;
+    } else {
+        islamicEventLoader.textContent = "اگلا ایونٹ جلد اپ ڈیٹ کیا جائے گا۔";
+    }
 }
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
@@ -370,87 +483,12 @@ const allContent = [
     { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "کوئی معبود نہیں سوائے اللہ کے، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہی ہے اور اسی کے لیے حمد ہے، وہ زندہ کرتا ہے اور مارتا ہے، اور وہ ہر چیز پر قادر ہے۔", reference: "صحیح مسلم" },
     { category: "6 کلمے", arabic: "أَسْتَغْفِرُ اللَّهَ رَبِّي مِنْ كُلِّ ذَنْبٍ وَأَتُوبُ إِلَيْهِ", translation: "میں اپنے رب اللہ سے ہر گناہ کی مغفرت مانگتا ہوں اور اس کی طرف توبہ کرتا ہوں۔", reference: "صحیح بخاری" },
     { category: "6 کلمے", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ أَنْ أُشْرِكَ بِكَ شَيْئًا وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس سے کہ میں جانتے ہوئے تیرے ساتھ کسی کو شریک کروں، اور اس کے لیے مغفرت مانگتا ہوں جو میں نہیں جانتا۔", reference: "ابو داؤد" },
-
     // 50 دعائیں
     { category: "50 دعائیں", arabic: "اَللّٰھُمَّ اِنِّیْ اَسْئَلُکَ الْعَفْوَ وَالْعَافِیَةَ فِی الدُّنْیَا وَالْآخِرَةِ", translation: "اے اللہ! میں تجھ سے دنیا اور آخرت میں معافی اور عافیت مانگتا ہوں۔", reference: "ابن ماجہ" },
     { category: "50 دعائیں", arabic: "رَبَّنَا آتِنَا فِی الدُّنْیَا حَسَنَةً وَّفِی الْآخِرَةِ حَسَنَةً وَّقِنَا عَذَابَ النَّارِ", translation: "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما اور آخرت میں بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔", reference: "البقرہ: 201" },
     { category: "50 دعائیں", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", translation: "میں اللہ کے کامل کلمات کے ساتھ اس شر سے پناہ مانگتا ہوں جو اس نے پیدا کیا۔", reference: "صحیح مسلم" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ", translation: "اے اللہ! میں تجھ سے جنت مانگتا ہوں اور دوزخ سے پناہ مانگتا ہوں۔", reference: "ابو داؤد" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ", translation: "اے اللہ! میرے تمام گناہ معاف فرما، چھوٹے اور بڑے۔", reference: "صحیح مسلم" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ", translation: "اے اللہ! میں تیری نعمت کے زوال سے تیری پناہ مانگتا ہوں۔", reference: "بخاری" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا", translation: "اے اللہ! میں تجھ سے نفع بخش علم، پاکیزہ رزق اور قبول ہونے والا عمل مانگتا ہوں۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ", translation: "اے میرے رب! مجھے اور میری اولاد کو نماز قائم کرنے والا بنا اور ہماری دعا قبول فرما۔", reference: "ابراہیم: 40" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں غم اور فکر سے۔", reference: "بخاری" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ بَارِكْ لَنَا فِي أَرْزَاقِنَا", translation: "اے اللہ! ہمارے رزق میں برکت عطا فرما۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا", translation: "اے اللہ! میرے دل میں نور عطا فرما۔", reference: "صحیح مسلم" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ هُدًى وَتُقًى وَعَفَافًا وَغِنًى", translation: "اے اللہ! میں تجھ سے ہدایت، تقویٰ، پاکدامنی اور غنا مانگتا ہوں۔", reference: "صحیح مسلم" },
-    { category: "50 دعائیں", arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ", translation: "اے میرے رب! مجھے اور میرے والدین کو معاف فرما۔", reference: "نوح: 28" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عِلْمٍ لَا يَنْفَعُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس علم سے جو نفع نہ دے۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ ارْزُقْنِي حُبَّكَ وَحُبَّ مَنْ يُحِبُّكَ", translation: "اے اللہ! مجھے تیری محبت اور اس کی محبت عطا فرما جو تجھے محبت کرتا ہے۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ رِزْقًا وَاسِعًا", translation: "اے اللہ! میں تجھ سے وسیع رزق مانگتا ہوں۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ يَسِّرْ لِي خَيْرًا حَيْثُ كَانَ", translation: "اے اللہ! میرے لیے خیر کو آسان کر دے جہاں بھی ہو۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ فِتْنَةِ النَّارِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں دوزخ کی فتنہ سے۔", reference: "ابو داؤد" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي شَكُورًا", translation: "اے اللہ! مجھے شکر گزار بنا۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْمَغْفِرَةَ", translation: "اے اللہ! میں تجھ سے معافی اور بخشش مانگتا ہوں۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "رَبِّ هَبْ لِي حُكْمًا وَأَلْحِقْنِي بِالصَّالِحِينَ", translation: "اے میرے رب! مجھے حکمت عطا فرما اور مجھے نیک لوگوں میں شامل کر۔", reference: "الشعراء: 83" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ جَارٍ سُوءٍ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں برے پڑوسی سے۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَسْأَلَةِ", translation: "اے اللہ! میں تجھ سے بہترین دعا مانگتا ہوں۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ النَّفْسِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں نفس کے شر سے۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ", translation: "اے اللہ! میری مدد فرما تیرے ذکر اور شکر میں۔", reference: "ابو داؤد" },
-    { category: "50 دعائیں", arabic: "رَبِّ زِدْنِي عِلْمًا", translation: "اے میرے رب! مجھے علم میں اضافہ فرما۔", reference: "طہ: 114" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْجُبْنِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں بزدلی سے۔", reference: "بخاری" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْفِرْدَوْسَ الأَعْلَى", translation: "اے اللہ! میں تجھ سے جنت الفردوس مانگتا ہوں۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفَقْرِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں غربت سے۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ", translation: "اے اللہ! مجھے توبہ کرنے والوں میں سے بنا۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ صِحَّةً فِي إِيمَانٍ", translation: "اے اللہ! میں تجھ سے ایمان میں صحت مانگتا ہوں۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں قبر کے عذاب سے۔", reference: "بخاری" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى", translation: "اے اللہ! میں تجھ سے ہدایت اور تقویٰ مانگتا ہوں۔", reference: "ابو داؤد" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكَسَلِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں سستی سے۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي مِنَ الصَّابِرِينَ", translation: "اے اللہ! مجھے صبر کرنے والوں میں سے بنا۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَمَالَ فِي الْخُلْقِ", translation: "اے اللہ! میں تجھ سے اخلاق میں خوبصورتی مانگتا ہوں۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "رَبِّ أَعُوذُ بِكَ مِنْ هَمَازَاتِ الْمَهَازِلِ", translation: "اے میرے رب! میں تیری پناہ مانگتا ہوں طعنہ دینے والوں سے۔", reference: "القَلَم: 11-12" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ ضَيْقِ الدُّنْيَا", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں دنیا کی تنگی سے۔", reference: "ابن ماجہ" },
-    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعِزَّةَ بِالْحَقِّ", translation: "اے اللہ! میں تجھ سے حق کے ساتھ عزت مانگتا ہوں۔", reference: "ترمذی" },
-
-    // 40 احادیث
-    { category: "40 احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔", reference: "صحیح بخاری: 1" },
-    { category: "40 احادیث", arabic: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ", translation: "جسے اللہ بھلائی چاہتا ہے، اسے دین میں سمجھ دیتا ہے۔", reference: "صحیح بخاری: 71" },
-    { category: "40 احادیث", arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", translation: "مسلمان وہ ہے جس سے دوسرے مسلمان اس کی زبان اور ہاتھ سے محفوظ رہیں۔", reference: "صحیح بخاری: 10" },
-    { category: "40 احادیث", arabic: "لَا إِيمَانَ لِمَنْ لَا أَمَانَةَ لَهُ، وَلَا دِينَ لِمَنْ لَا عَهْدَ لَهُ", translation: "جس میں امانت نہ ہو اس کا ایمان نہیں، اور جس میں عہد نہ ہو اس کا دین نہیں۔", reference: "مسند احمد" },
-    { category: "40 احادیث", arabic: "الدُّعَاءُ هُوَ الْعِبَادَةُ", translation: "دعا ہی عبادت ہے۔", reference: "ترمذی: 3372" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرًا", translation: "جو شخص میری ایک بار صلوٰۃ بھیجے، اللہ اس پر دس بار درود بھیجتا ہے۔", reference: "صحیح مسلم: 384" },
-    { category: "40 احادیث", arabic: "الْمُسْلِمُ أَخُو الْمُسْلِمِ", translation: "مسلمان مسلمان کا بھائی ہے۔", reference: "صحیح بخاری: 2442" },
-    { category: "40 احادیث", arabic: "اطْلُبُوا الْعِلْمَ وَلَوْ فِي الصِّينِ", translation: "علم حاصل کرو، اگرچہ چین تک جانا پڑے۔", reference: "ابن ماجہ: 224" },
-    { category: "40 احادیث", arabic: "الصَّدَقَةُ تَطْفِئُ خَطِيئَةً كَمَا يُطْفِئُ الْمَاءُ النَّارَ", translation: "صدقہ گناہ کو اس طرح بجھاتا ہے جیسے پانی آگ کو بجھاتا ہے۔", reference: "ترمذی: 2541" },
-    { category: "40 احادیث", arabic: "مَنْ كَذَبَ عَلَيَّ مُتَعَمِّدًا فَلْيَتَبَوَّأْ مَقْعَدَهُ مِنَ النَّارِ", translation: "جو شخص جان بوجھ کر میری کوئی بات گھڑے، اسے جہنم میں اپنی جگہ تیار کر لینی چاہیے۔", reference: "صحیح بخاری: 108" },
-    { category: "40 احادیث", arabic: "الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", translation: "حلال صاف ہے اور حرام بھی صاف ہے۔", reference: "صحیح مسلم: 1599" },
-    { category: "40 احادیث", arabic: "مَنْ عَمِلَ بِمَا عَلِمَ وَرَّثَهُ اللَّهُ عِلْمًا لَمْ يَعْلَمْ", translation: "جو شخص اس علم پر عمل کرتا ہے جو وہ جانتا ہے، اللہ اسے اس علم سے نوازتا ہے جو وہ نہیں جانتا۔", reference: "ترمذی: 2646" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ", translation: "قوی مومن کمزور مومن سے بہتر اور اللہ کے نزدیک زیادہ محبوب ہے۔", reference: "ترمذی: 2205" },
-    { category: "40 احادیث", arabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ", translation: "صدقہ مال سے کمی نہیں کرتا۔", reference: "صحیح مسلم: 2588" },
-    { category: "40 احادیث", arabic: "الْمُسْلِمُ مَنْ سَلَّمَ النَّاسُ مِنْ لِسَانِهِ وَيَدِهِ", translation: "مسلمان وہ ہے جس سے لوگ اس کی زبان اور ہاتھ سے محفوظ ہوں۔", reference: "صحیح بخاری: 11" },
-    { category: "40 احادیث", arabic: "الْعِبَادَةُ فِي الْفِتْنَةِ كَالْهِجْرَةِ إِلَيَّ", translation: "فتنہ کے زمانے میں عبادت میرے ہجرت کرنے کے برابر ہے۔", reference: "صحیح مسلم: 1847" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ فِي كِتَابِهِ أَوْ دِيوَانِهِ صَلَّى اللَّهُ عَلَيْهِ مَائَةَ مَرَّةٍ", translation: "جو شخص اپنی کتاب یا ڈائری میں میری صلوٰۃ پڑھے، اللہ اس پر سو بار درود بھیجے گا۔", reference: "ابن ماجہ: 928" },
-    { category: "40 احادیث", arabic: "الْبَرُّ بِوَالِدَيْهِ يَجْعَلُهُ فِي الْجَنَّةِ", translation: "اپنے والدین کے ساتھ نیکی اسے جنت میں داخل کرے گی۔", reference: "ترمذی: 1900" },
-    { category: "40 احادیث", arabic: "مَنْ حَسُنَ خُلُقُهُ دَنَا مِنْ دَرَجَاتِ الصَّلَاةِ وَالصِّيَامِ", translation: "جس کا اخلاق اچھا ہو وہ نماز اور روزے کی درجات تک پہنچ جاتا ہے۔", reference: "ترمذی: 2018" },
-    { category: "40 احادیث", arabic: "مَنْ سَأَلَ اللَّهَ الشَّهَادَةَ بِحَقِّهَا أَدْخَلَهُ اللَّهُ دَرَجَاتِ الشُّهَدَاءِ", translation: "جو شخص اللہ سے شہادت کی صداقت کے ساتھ مانگے، اللہ اسے شہداء کی درجات میں داخل کرے گا۔", reference: "صحیح مسلم: 1909" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى الْعَتَمَةَ فِي جَمَاعَةٍ كَانَ كَمَنْ قَامَ قِيَامَ لَيْلَةٍ", translation: "جو شخص جماعت کے ساتھ عشاء کی نماز پڑھے وہ گویا پوری رات عبادت کرتا ہے۔", reference: "صحیح مسلم: 656" },
-    { category: "40 احادیث", arabic: "الدُّعَاءُ سِلاحُ الْمُؤْمِنِ", translation: "دعا مومن کا ہتھیار ہے۔", reference: "ابن ماجہ: 3828" },
-    { category: "40 احادیث", arabic: "مَنْ تَعَلَّمَ عِلْمًا مِمَّا يُبْتَغَى بِهِ وَجْهُ اللَّهِ لَمْ يَجْعَلْهُ زَيْنًا", translation: "جو شخص اللہ کے چہرے کی خاطر علم سیکھے اور اسے زینت نہ بنائے۔", reference: "ابو داؤد: 3664" },
-    { category: "40 احادیث", arabic: "مَا تَزَالُ بَنُو إِسْرَائِيلَ يَتَعَلَّمُونَ الْعِلْمَ", translation: "بنو اسرائیل علم سیکھتے رہتے تھے۔", reference: "ترمذی: 2686" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ مِثْلُ النَّحْلَةِ", translation: "مومن شہد کی مکھی کی طرح ہے۔", reference: "ابن ماجہ: 3820" },
-    { category: "40 احادیث", arabic: "مَنْ سَمَّى وَلَدَهُ بِاسْمِي حُبِّبَ إِلَيَّ", translation: "جو شخص اپنے بچے کا نام میرے نام پر رکھے، وہ مجھے محبوب ہوگا۔", reference: "ابن ماجہ: 3706" },
-    { category: "40 احادیث", arabic: "الْجَنَّةُ مَحْجُورَةٌ بِالْمَشَاقِّ", translation: "جنت مشقتوں سے گھری ہوئی ہے۔", reference: "بخاری: 5396" },
-    { category: "40 احادیث", arabic: "مَنْ قَرَأَ سُورَةَ الإِخْلَاصِ عَشْرَ مَرَّاتٍ كَانَ كَمَنْ قَرَأَ الْقُرْآنَ مَرَّتَيْنِ", translation: "جو شخص سورہ اخلاص دس مرتبہ پڑھے وہ گویا پورے قرآن کو دو بار پڑھ لیا۔", reference: "ترمذی: 2903" },
-    { category: "40 احادیث", arabic: "مَنْ حَسُنَتْ خُلُقُهُ دَخَلَ الْجَنَّةَ", translation: "جس کا اخلاق اچھا ہو وہ جنت میں داخل ہوگا۔", reference: "ابن ماجہ: 4108" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ فِي كُلِّ يَوْمٍ سَبْعِينَ مَرَّةً", translation: "جو شخص ہر روز ستر مرتبہ میری صلوٰۃ بھیجے۔", reference: "ابن ماجہ: 929" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ يَدْعُو لَهُ مَلَائِكَةُ الرَّحْمَةِ", translation: "مومن کے لیے رحمت کے فرشتے دعا کرتے ہیں۔", reference: "ترمذی: 1983" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى الصُّبْحَ فِي جَمَاعَةٍ", translation: "جو شخص صبح کی نماز جماعت کے ساتھ پڑھے۔", reference: "صحیح مسلم: 656" },
-    { category: "40 احادیث", arabic: "الصِّدْقُ يَقْرِبُ إِلَى الْجَنَّةِ", translation: "صداقت جنت کے قریب لیجاتی ہے۔", reference: "بخاری: 6094" },
-    { category: "40 احادیث", arabic: "مَنْ تَابَ إِلَى اللَّهِ تَابَ اللَّهُ عَلَيْهِ", translation: "جو شخص اللہ کی طرف رجوع کرے، اللہ اس پر رحم کرتا ہے۔", reference: "صحیح مسلم: 2760" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى رَكْعَتَيْنِ بِالْفَجْرِ", translation: "جو شخص فجر کی دو رکعات پڑھے۔", reference: "بخاری: 1162" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ الَّذِي يُصِيبُهُ الأَذَى", translation: "وہ مومن جو تکلیف میں پڑتا ہے۔", reference: "صحیح مسلم: 2572" },
-    { category: "40 احادیث", arabic: "مَنْ عَفَا عَنِ الْمُظْلِمِ", translation: "جو شخص ظالم کو معاف کر دے۔", reference: "ابن ماجہ: 2340" },
-    { category: "40 احادیث", arabic: "مَنْ حَجَّ الْبَيْتَ وَلَمْ يَرْمِ", translation: "جو شخص بیت اللہ کا حج کرے اور بدکاری نہ کرے۔", reference: "بخاری: 1521" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ دِقَّهُ وَجِلَّهُ وَأَوَّلَهُ وَآخِرَهُ وَعَلَانِيَتَهُ وَسِرَّهُ", translation: "اے اللہ! میرے تمام گناہ معاف فرما، چھوٹے اور بڑے، پہلے اور آخری، ظاہری اور پوشیدہ۔", reference: "صحیح مسلم" },
+    { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ", translation: "اے اللہ! میں تجھ سے جنت مانگتا ہوں اور جہنم سے تیری پناہ مانگتا ہوں۔", reference: "ابو داؤد" }
 ];
 
 function loadDuaContent() {
@@ -463,78 +501,115 @@ function loadDuaContent() {
         button.addEventListener('click', () => {
             document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            filterContent(category);
+            displayContent(category);
         });
         duaCategoriesContainer.appendChild(button);
     });
-
-    if (duaCategoriesContainer.firstChild) {
-        duaCategoriesContainer.firstChild.classList.add('active');
-        filterContent(categories[0]);
+    if (categories.length > 0) {
+        duaCategoriesContainer.querySelector('.category-button').classList.add('active');
+        displayContent(categories[0]);
     }
 }
 
-function filterContent(category) {
-    const items = allContent.filter(item => item.category === category);
+function displayContent(category) {
     duaListContainer.innerHTML = '';
+    const items = allContent.filter(item => item.category === category);
     items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'dua-card';
-        card.innerHTML = `<p class="dua-arabic">${item.arabic}</p><p class="dua-translation">${item.translation}${item.reference ? ` (${item.reference})` : ''}</p>`;
+        card.innerHTML = `
+            <p class="dua-arabic">${item.arabic}</p>
+            <p class="dua-translation">${item.translation}${item.reference ? ` (${item.reference})` : ''}</p>
+        `;
         duaListContainer.appendChild(card);
     });
 }
 
-function displayNames(names) {
+function displayNames() {
     namesContainer.innerHTML = '';
-    names.forEach(name => {
-        const nameCard = document.createElement('div');
-        nameCard.className = 'name-card';
-        nameCard.innerHTML = `<p class="name-arabic">${name.name}</p><p class="name-translation">${name.transliteration} - ${name.ur_meaning}</p>`;
-        namesContainer.appendChild(nameCard);
+    namesData.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'name-card';
+        card.innerHTML = `
+            <p class="name-arabic">${name.name}</p>
+            <p class="name-translation">${name.ur_meaning} (${name.transliteration})</p>
+        `;
+        namesContainer.appendChild(card);
     });
 }
 
-showNamesBtn.addEventListener('click', () => openModal('names-modal'));
+showNamesBtn.addEventListener('click', () => {
+    openModal('names-modal');
+    displayNames();
+});
 
-// --- Modal & Menu Links ---
 function openModal(modalId) {
-    closeAllModals();
     document.getElementById(modalId).style.display = 'flex';
-    if (modalId === 'names-modal' && namesContainer.innerHTML === '') {
-        displayNames(namesData);
-    }
 }
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
+
 function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+    });
 }
 
-rateAppLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
-shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
+// --- Rate & Share Functionality ---
+rateAppLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    duaListContainer.innerHTML = '<div class="coming-soon-container"><span class="material-symbols-outlined">construction</span><p>یہ فیچر جلد آ رہا ہے!</p></div>';
+});
 
-// --- Initial Load ---
+shareAppLink.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+        await navigator.share({
+            title: 'القرآن الكريم - Faraz AI',
+            text: 'اس شاندار ایپ سے قرآن پڑھیں، دعائیں سیکھیں، اور فراز AI سے اسلامی سوالات کے جوابات حاصل کریں!',
+            url: window.location.href
+        });
+    } catch (error) {
+        duaListContainer.innerHTML = '<div class="coming-soon-container"><span class="material-symbols-outlined">share</span><p>شیئر کرنے میں ناکامی، براہ کرم دوبارہ کوشش کریں۔</p></div>';
+    }
+});
+
+// --- Initialize App ---
 document.addEventListener('DOMContentLoaded', () => {
     showPage('homeCustomPage');
     fetchSurahList();
     updateTarget();
     loadDuaContent();
+    showRandomAyah();
+    showDuaOfTheDay();
+    showTasbihSummary();
+    showIslamicEventCountdown();
+    setInterval(showRandomAyah, 600000); // Refresh ayah every 10 minutes
+    setInterval(showDuaOfTheDay, 600000); // Refresh dua every 10 minutes
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-            getPrayerTimes(position.coords.latitude, position.coords.longitude);
-        }, () => { prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔"; });
+            const { latitude, longitude } = position.coords;
+            getPrayerTimes(latitude, longitude);
+            getQiblaDirection(latitude, longitude);
+            getIslamicDate(latitude, longitude);
+        }, () => {
+            prayerTimeLoader.textContent = "لوکیشن کی اجازت درکار ہے۔";
+            qiblaLoader.textContent = "لوکیشن کی اجازت درکار ہے۔";
+            islamicDateLoader.textContent = "لوکیشن کی اجازت درکار ہے۔";
+        });
     } else {
         prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
+        qiblaLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
+        islamicDateLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
     }
-    showRandomAyah();
-    setInterval(showRandomAyah, 600000);
 });
 
-// Service Worker Registration
+// --- Service Worker Registration ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed:', err));
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+        }).catch(error => {
+            console.log('Service Worker registration failed:', error);
+        });
     });
 }

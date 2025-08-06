@@ -28,6 +28,9 @@ const dailyAyahContainer = document.getElementById('daily-ayah-container');
 const prayerTimeLoader = document.getElementById('prayer-time-loader');
 const rateAppLink = document.getElementById('rate-app-link');
 const shareAppLink = document.getElementById('share-app-link');
+// New element for Sahaba stories
+const sahabaStoriesContainer = document.getElementById('sahaba-stories-container');
+
 
 // --- Navigation & Side Menu Logic ---
 navButtons.forEach(button => {
@@ -48,17 +51,20 @@ function showPage(pageId) {
     if (activePage) activePage.classList.add('active');
     if (activeButton) activeButton.classList.add('active');
     
-    if (pageId === 'homeCustomPage') {
+    // Show/hide menu button based on the page
+    if (pageId === 'homeCustomPage' || pageId === 'quranPage' || pageId === 'duaPage' || pageId === 'tasbihPage') {
         menuButton.classList.add('visible');
     } else {
         menuButton.classList.remove('visible');
     }
 
+    // Stop audio if navigating away from surah detail page
     if (pageId !== 'surahDetailPage') {
         mainAudioPlayer.pause();
         mainAudioPlayer.src = '';
     }
 }
+
 
 menuButton.addEventListener('click', () => {
     sideMenu.classList.toggle('open');
@@ -176,7 +182,7 @@ async function askGoogleAI(question) {
         typingMessage.innerHTML = '';
         typingMessage.innerText = aiResponse;
     } catch (error) {
-        typingMessage.innerText = "معافی चाहता हूं, अभी मैं جواب نہیں دے سکتا۔";
+        typingMessage.innerText = "معافی चाहता हूं, अभी मैं जवाब नहीं दे सकता।";
     }
 }
 
@@ -258,6 +264,82 @@ function showRandomAyah() {
     const ayah = dailyAyahs[randomIndex];
     dailyAyahContainer.innerHTML = `<p class="ayah-arabic">${ayah.arabic}</p><p class="ayah-translation">${ayah.translation}</p>`;
 }
+
+// --- 10 Sahaba Ka Waqiya Data ---
+const sahabaStories = [
+    { title_arabic: "صحیح البخاری", title_english: "Al-Bukhari", story: "Story of Abu Bakr (RA)..." },
+    { title_arabic: "صحیح مسلم", title_english: "Al-Muslim", story: "Story of Umar (RA)..." },
+    { title_arabic: "جامع ترمذی", title_english: "Al-Tirmizi", story: "Story of Uthman (RA)..." },
+    { title_arabic: "سنن ابو داؤد", title_english: "Abu Dawood", story: "Story of Ali (RA)..." },
+    { title_arabic: "سنن نسائی", title_english: "Al-Nasai", story: "Story of Talha (RA)..." },
+    { title_arabic: "سنن ابن ماجہ", title_english: "Sunnan e Ibn e Maja", story: "Story of Zubair (RA)..." },
+    { title_arabic: "السلسلة", title_english: "Al-Silsila", story: "Story of Abdur Rahman (RA)..." },
+    { title_arabic: "مسند احمد", title_english: "Musnad Ahmed", story: "Story of Sa'd (RA)..." },
+    { title_arabic: "مشکوة", title_english: "Mishkat", story: "Story of Sa'id (RA)..." },
+    { title_arabic: "المستدرک", title_english: "Al-Mustadrak Hakim", story: "Story of Abu Ubaidah (RA)..." }
+];
+
+// --- Function to display Sahaba Stories ---
+function displaySahabaStories() {
+    if (!sahabaStoriesContainer) return;
+    sahabaStoriesContainer.innerHTML = ''; // Clear previous content
+    sahabaStories.forEach(sahabi => {
+        const storyBox = document.createElement('div');
+        storyBox.className = 'sahaba-story-box';
+        storyBox.innerHTML = `
+            <div class="sahaba-story-content">
+                <h3 class="sahaba-title-arabic">${sahabi.title_arabic}</h3>
+                <p class="sahaba-title-english">${sahabi.title_english}</p>
+                <button class="read-story-btn">Read More</button>
+            </div>
+        `;
+        // Add event listener to open modal with the story
+        storyBox.addEventListener('click', () => {
+            openStoryModal(sahabi.title_english, sahabi.story);
+        });
+        sahabaStoriesContainer.appendChild(storyBox);
+    });
+}
+
+// --- Function to open a modal with the story ---
+function openStoryModal(title, story) {
+    // First, ensure any existing story modal is removed
+    const existingModal = document.getElementById('story-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Create modal elements
+    const modal = document.createElement('div');
+    modal.id = 'story-modal';
+    modal.className = 'modal';
+
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+
+    const closeButton = document.createElement('span');
+    closeButton.className = 'close-button';
+    closeButton.innerHTML = '&times;';
+    closeButton.onclick = () => modal.style.display = 'none';
+
+    const modalTitle = document.createElement('h2');
+    modalTitle.textContent = title;
+
+    const modalBody = document.createElement('p');
+    modalBody.textContent = story;
+    modalBody.style.textAlign = 'left'; // Adjust text alignment as needed
+
+    // Assemble modal
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(modalTitle);
+    modalContent.appendChild(modalBody);
+    modal.appendChild(modalContent);
+
+    // Add to body and display
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+}
+
 
 // --- Dua, Kalma, Hadith & 99 Names Data & Functionality ---
 const namesData = [
@@ -366,7 +448,7 @@ const allContent = [
     // 6 کلمے
     { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ مُحَمَّدٌ رَسُولُ اللَّهِ", translation: "کوئی معبود نہیں سوائے اللہ کے، محمد صلی اللہ علیہ وسلم اللہ کے رسول ہیں۔", reference: "صحیح بخاری" },
     { category: "6 کلمے", arabic: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", translation: "میں گواہی دیتا ہوں کہ کوئی معبود نہیں سوائے اللہ کے، اور میں گواہی دیتا ہوں کہ محمد صلی اللہ علیہ وسلم اس کے بندے اور رسول ہیں۔", reference: "صحیح مسلم" },
-    { category: "6 کلمے", arabic: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ", translation: "اللہ پاک ہے، تمام تعریفیں اللہ کے لیے ہیں، کوئی معبود نہیں سوائے اللہ کے، اور اللہ سب سے بڑا ہے۔", reference: "صحیح بخاری" },
+    { category: "6 کلمے", arabic: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ", translation: "اللہ پاک ہے، تمام تعریفیں اللہ کے لیے ہیں، کوئی معبود نہیں سوائے اللہ کے اور اللہ سب سے بڑا ہے۔", reference: "صحیح مسلم" },
     { category: "6 کلمے", arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", translation: "کوئی معبود نہیں سوائے اللہ کے، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہی ہے اور اسی کے لیے حمد ہے، وہ زندہ کرتا ہے اور مارتا ہے، اور وہ ہر چیز پر قادر ہے۔", reference: "صحیح مسلم" },
     { category: "6 کلمے", arabic: "أَسْتَغْفِرُ اللَّهَ رَبِّي مِنْ كُلِّ ذَنْبٍ وَأَتُوبُ إِلَيْهِ", translation: "میں اپنے رب اللہ سے ہر گناہ کی مغفرت مانگتا ہوں اور اس کی طرف توبہ کرتا ہوں۔", reference: "صحیح بخاری" },
     { category: "6 کلمے", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ أَنْ أُشْرِكَ بِكَ شَيْئًا وَأَنَا أَعْلَمُ، وَأَسْتَغْفِرُكَ لِمَا لَا أَعْلَمُ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں اس سے کہ میں جانتے ہوئے تیرے ساتھ کسی کو شریک کروں، اور اس کے لیے مغفرت مانگتا ہوں جو میں نہیں جانتا۔", reference: "ابو داؤد" },
@@ -408,50 +490,43 @@ const allContent = [
     { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكَسَلِ", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں سستی سے۔", reference: "ترمذی" },
     { category: "50 دعائیں", arabic: "اللَّهُمَّ اجْعَلْنِي مِنَ الصَّابِرِينَ", translation: "اے اللہ! مجھے صبر کرنے والوں میں سے بنا۔", reference: "ابن ماجہ" },
     { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَمَالَ فِي الْخُلْقِ", translation: "اے اللہ! میں تجھ سے اخلاق میں خوبصورتی مانگتا ہوں۔", reference: "ترمذی" },
-    { category: "50 دعائیں", arabic: "رَبِّ أَعُوذُ بِكَ مِنْ هَمَازَاتِ الْمَهَازِلِ", translation: "اے میرے رب! میں تیری پناہ مانگتا ہوں طعنہ دینے والوں سے۔", reference: "القَلَم: 11-12" },
+    { category: "50 دعائیں", arabic: "رَبِّ أَعُوذُ بِكَ مِنْ هَمَازَاتِ الشَّيَاطِينِ", translation: "اے میرے رب! میں شیاطین کے وسوسوں سے تیری پناہ مانگتا ہوں۔", reference: "المؤمنون: 97" },
     { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ ضَيْقِ الدُّنْيَا", translation: "اے اللہ! میں تیری پناہ مانگتا ہوں دنیا کی تنگی سے۔", reference: "ابن ماجہ" },
     { category: "50 دعائیں", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعِزَّةَ بِالْحَقِّ", translation: "اے اللہ! میں تجھ سے حق کے ساتھ عزت مانگتا ہوں۔", reference: "ترمذی" },
 
     // 40 احادیث
     { category: "40 احادیث", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", translation: "اعمال کا دارومدار نیتوں پر ہے۔", reference: "صحیح بخاری: 1" },
     { category: "40 احادیث", arabic: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ", translation: "جسے اللہ بھلائی چاہتا ہے، اسے دین میں سمجھ دیتا ہے۔", reference: "صحیح بخاری: 71" },
-    { category: "40 احادیث", arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", translation: "مسلمان وہ ہے جس سے دوسرے مسلمان اس کی زبان اور ہاتھ سے محفوظ رہیں۔", reference: "صحیح بخاری: 10" },
+    { category: "40 احادیث", arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُsْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", translation: "مسلمان وہ ہے جس سے دوسرے مسلمان اس کی زبان اور ہاتھ سے محفوظ رہیں۔", reference: "صحیح بخاری: 10" },
     { category: "40 احادیث", arabic: "لَا إِيمَانَ لِمَنْ لَا أَمَانَةَ لَهُ، وَلَا دِينَ لِمَنْ لَا عَهْدَ لَهُ", translation: "جس میں امانت نہ ہو اس کا ایمان نہیں، اور جس میں عہد نہ ہو اس کا دین نہیں۔", reference: "مسند احمد" },
     { category: "40 احادیث", arabic: "الدُّعَاءُ هُوَ الْعِبَادَةُ", translation: "دعا ہی عبادت ہے۔", reference: "ترمذی: 3372" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرًا", translation: "جو شخص میری ایک بار صلوٰۃ بھیجے، اللہ اس پر دس بار درود بھیجتا ہے۔", reference: "صحیح مسلم: 384" },
+    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرًا", translation: "جو شخص مجھ پر ایک بار درود بھیجے، اللہ اس پر دس بار رحمتیں بھیجتا ہے۔", reference: "صحیح مسلم: 384" },
     { category: "40 احادیث", arabic: "الْمُسْلِمُ أَخُو الْمُسْلِمِ", translation: "مسلمان مسلمان کا بھائی ہے۔", reference: "صحیح بخاری: 2442" },
-    { category: "40 احادیث", arabic: "اطْلُبُوا الْعِلْمَ وَلَوْ فِي الصِّينِ", translation: "علم حاصل کرو، اگرچہ چین تک جانا پڑے۔", reference: "ابن ماجہ: 224" },
-    { category: "40 احادیث", arabic: "الصَّدَقَةُ تَطْفِئُ خَطِيئَةً كَمَا يُطْفِئُ الْمَاءُ النَّارَ", translation: "صدقہ گناہ کو اس طرح بجھاتا ہے جیسے پانی آگ کو بجھاتا ہے۔", reference: "ترمذی: 2541" },
-    { category: "40 احادیث", arabic: "مَنْ كَذَبَ عَلَيَّ مُتَعَمِّدًا فَلْيَتَبَوَّأْ مَقْعَدَهُ مِنَ النَّارِ", translation: "جو شخص جان بوجھ کر میری کوئی بات گھڑے، اسے جہنم میں اپنی جگہ تیار کر لینی چاہیے۔", reference: "صحیح بخاری: 108" },
-    { category: "40 احادیث", arabic: "الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", translation: "حلال صاف ہے اور حرام بھی صاف ہے۔", reference: "صحیح مسلم: 1599" },
-    { category: "40 احادیث", arabic: "مَنْ عَمِلَ بِمَا عَلِمَ وَرَّثَهُ اللَّهُ عِلْمًا لَمْ يَعْلَمْ", translation: "جو شخص اس علم پر عمل کرتا ہے جو وہ جانتا ہے، اللہ اسے اس علم سے نوازتا ہے جو وہ نہیں جانتا۔", reference: "ترمذی: 2646" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ", translation: "قوی مومن کمزور مومن سے بہتر اور اللہ کے نزدیک زیادہ محبوب ہے۔", reference: "ترمذی: 2205" },
-    { category: "40 احادیث", arabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ", translation: "صدقہ مال سے کمی نہیں کرتا۔", reference: "صحیح مسلم: 2588" },
-    { category: "40 احادیث", arabic: "الْمُسْلِمُ مَنْ سَلَّمَ النَّاسُ مِنْ لِسَانِهِ وَيَدِهِ", translation: "مسلمان وہ ہے جس سے لوگ اس کی زبان اور ہاتھ سے محفوظ ہوں۔", reference: "صحیح بخاری: 11" },
-    { category: "40 احادیث", arabic: "الْعِبَادَةُ فِي الْفِتْنَةِ كَالْهِجْرَةِ إِلَيَّ", translation: "فتنہ کے زمانے میں عبادت میرے ہجرت کرنے کے برابر ہے۔", reference: "صحیح مسلم: 1847" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ فِي كِتَابِهِ أَوْ دِيوَانِهِ صَلَّى اللَّهُ عَلَيْهِ مَائَةَ مَرَّةٍ", translation: "جو شخص اپنی کتاب یا ڈائری میں میری صلوٰۃ پڑھے، اللہ اس پر سو بار درود بھیجے گا۔", reference: "ابن ماجہ: 928" },
-    { category: "40 احادیث", arabic: "الْبَرُّ بِوَالِدَيْهِ يَجْعَلُهُ فِي الْجَنَّةِ", translation: "اپنے والدین کے ساتھ نیکی اسے جنت میں داخل کرے گی۔", reference: "ترمذی: 1900" },
-    { category: "40 احادیث", arabic: "مَنْ حَسُنَ خُلُقُهُ دَنَا مِنْ دَرَجَاتِ الصَّلَاةِ وَالصِّيَامِ", translation: "جس کا اخلاق اچھا ہو وہ نماز اور روزے کی درجات تک پہنچ جاتا ہے۔", reference: "ترمذی: 2018" },
-    { category: "40 احادیث", arabic: "مَنْ سَأَلَ اللَّهَ الشَّهَادَةَ بِحَقِّهَا أَدْخَلَهُ اللَّهُ دَرَجَاتِ الشُّهَدَاءِ", translation: "جو شخص اللہ سے شہادت کی صداقت کے ساتھ مانگے، اللہ اسے شہداء کی درجات میں داخل کرے گا۔", reference: "صحیح مسلم: 1909" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى الْعَتَمَةَ فِي جَمَاعَةٍ كَانَ كَمَنْ قَامَ قِيَامَ لَيْلَةٍ", translation: "جو شخص جماعت کے ساتھ عشاء کی نماز پڑھے وہ گویا پوری رات عبادت کرتا ہے۔", reference: "صحیح مسلم: 656" },
-    { category: "40 احادیث", arabic: "الدُّعَاءُ سِلاحُ الْمُؤْمِنِ", translation: "دعا مومن کا ہتھیار ہے۔", reference: "ابن ماجہ: 3828" },
-    { category: "40 احادیث", arabic: "مَنْ تَعَلَّمَ عِلْمًا مِمَّا يُبْتَغَى بِهِ وَجْهُ اللَّهِ لَمْ يَجْعَلْهُ زَيْنًا", translation: "جو شخص اللہ کے چہرے کی خاطر علم سیکھے اور اسے زینت نہ بنائے۔", reference: "ابو داؤد: 3664" },
-    { category: "40 احادیث", arabic: "مَا تَزَالُ بَنُو إِسْرَائِيلَ يَتَعَلَّمُونَ الْعِلْمَ", translation: "بنو اسرائیل علم سیکھتے رہتے تھے۔", reference: "ترمذی: 2686" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ مِثْلُ النَّحْلَةِ", translation: "مومن شہد کی مکھی کی طرح ہے۔", reference: "ابن ماجہ: 3820" },
-    { category: "40 احادیث", arabic: "مَنْ سَمَّى وَلَدَهُ بِاسْمِي حُبِّبَ إِلَيَّ", translation: "جو شخص اپنے بچے کا نام میرے نام پر رکھے، وہ مجھے محبوب ہوگا۔", reference: "ابن ماجہ: 3706" },
-    { category: "40 احادیث", arabic: "الْجَنَّةُ مَحْجُورَةٌ بِالْمَشَاقِّ", translation: "جنت مشقتوں سے گھری ہوئی ہے۔", reference: "بخاری: 5396" },
-    { category: "40 احادیث", arabic: "مَنْ قَرَأَ سُورَةَ الإِخْلَاصِ عَشْرَ مَرَّاتٍ كَانَ كَمَنْ قَرَأَ الْقُرْآنَ مَرَّتَيْنِ", translation: "جو شخص سورہ اخلاص دس مرتبہ پڑھے وہ گویا پورے قرآن کو دو بار پڑھ لیا۔", reference: "ترمذی: 2903" },
-    { category: "40 احادیث", arabic: "مَنْ حَسُنَتْ خُلُقُهُ دَخَلَ الْجَنَّةَ", translation: "جس کا اخلاق اچھا ہو وہ جنت میں داخل ہوگا۔", reference: "ابن ماجہ: 4108" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى عَلَيَّ فِي كُلِّ يَوْمٍ سَبْعِينَ مَرَّةً", translation: "جو شخص ہر روز ستر مرتبہ میری صلوٰۃ بھیجے۔", reference: "ابن ماجہ: 929" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ يَدْعُو لَهُ مَلَائِكَةُ الرَّحْمَةِ", translation: "مومن کے لیے رحمت کے فرشتے دعا کرتے ہیں۔", reference: "ترمذی: 1983" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى الصُّبْحَ فِي جَمَاعَةٍ", translation: "جو شخص صبح کی نماز جماعت کے ساتھ پڑھے۔", reference: "صحیح مسلم: 656" },
-    { category: "40 احادیث", arabic: "الصِّدْقُ يَقْرِبُ إِلَى الْجَنَّةِ", translation: "صداقت جنت کے قریب لیجاتی ہے۔", reference: "بخاری: 6094" },
-    { category: "40 احادیث", arabic: "مَنْ تَابَ إِلَى اللَّهِ تَابَ اللَّهُ عَلَيْهِ", translation: "جو شخص اللہ کی طرف رجوع کرے، اللہ اس پر رحم کرتا ہے۔", reference: "صحیح مسلم: 2760" },
-    { category: "40 احادیث", arabic: "مَنْ صَلَّى رَكْعَتَيْنِ بِالْفَجْرِ", translation: "جو شخص فجر کی دو رکعات پڑھے۔", reference: "بخاری: 1162" },
-    { category: "40 احادیث", arabic: "الْمُؤْمِنُ الَّذِي يُصِيبُهُ الأَذَى", translation: "وہ مومن جو تکلیف میں پڑتا ہے۔", reference: "صحیح مسلم: 2572" },
-    { category: "40 احادیث", arabic: "مَنْ عَفَا عَنِ الْمُظْلِمِ", translation: "جو شخص ظالم کو معاف کر دے۔", reference: "ابن ماجہ: 2340" },
-    { category: "40 احادیث", arabic: "مَنْ حَجَّ الْبَيْتَ وَلَمْ يَرْمِ", translation: "جو شخص بیت اللہ کا حج کرے اور بدکاری نہ کرے۔", reference: "بخاری: 1521" },
+    { category: "40 احادیث", arabic: "اطْلُبُوا الْعِلْمَ مِنَ الْمَهْدِ إِلَى اللَّحْدِ", translation: "علم حاصل کرو گود سے قبر تک۔", reference: "ضعیف الجامع" },
+    { category: "40 احادیث", arabic: "الصَّدَقَةُ تَطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ", translation: "صدقہ گناہ کو اس طرح بجھاتا ہے جیسے پانی آگ کو بجھاتا ہے۔", reference: "ترمذی: 2541" },
+    { category: "40 احادیث", arabic: "مَنْ كَذَبَ عَلَيَّ مُتَعَمِّدًا فَلْيَتَبَوَّأْ مَقْعَدَهُ مِنَ النَّارِ", translation: "جو شخص جان بوجھ کر میری طرف جھوٹی بات منسوب کرے، وہ اپنا ٹھکانا جہنم میں بنا لے۔", reference: "صحیح بخاری: 108" },
+    { category: "40 احادیث", arabic: "الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", translation: "حلال واضح ہے اور حرام بھی واضح ہے۔", reference: "صحیح مسلم: 1599" },
+    { category: "40 احادیث", arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", translation: "تم میں سے بہترین وہ ہے جو قرآن سیکھے اور سکھائے۔", reference: "صحیح بخاری: 5027" },
+    { category: "40 احادیث", arabic: "الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ", translation: "طاقتور مومن کمزور مومن سے بہتر اور اللہ کے نزدیک زیادہ محبوب ہے۔", reference: "صحیح مسلم: 2664" },
+    { category: "40 احادیث", arabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ", translation: "صدقہ مال میں کمی نہیں کرتا۔", reference: "صحیح مسلم: 2588" },
+    { category: "40 احادیث", arabic: "كُلُّ مَعْرُوفٍ صَدَقَةٌ", translation: "ہر نیکی صدقہ ہے۔", reference: "صحیح بخاری: 6021" },
+    { category: "40 احادیث", arabic: "الْعِبَادَةُ فِي الْهَرْجِ كَهِجْرَةٍ إِلَيَّ", translation: "فتنے کے زمانے میں عبادت کرنا میری طرف ہجرت کرنے کے برابر ہے۔", reference: "صحیح مسلم: 2948" },
+    { category: "40 احادیث", arabic: "الْجَنَّةُ تَحْتَ أَقْدَامِ الأُمَّهَاتِ", translation: "جنت ماؤں کے قدموں تلے ہے۔", reference: "مسند احمد" },
+    { category: "40 احادیث", arabic: "رِضَا الرَّبِّ فِي رِضَا الْوَالِدِ", translation: "رب کی رضا والد کی رضا میں ہے۔", reference: "ترمذی: 1899" },
+    { category: "40 احادیث", arabic: "مَنْ حَسُنَ خُلُقُهُ بَلَغَ بِهِ دَرَجَةَ الصَّائِمِ الْقَائِمِ", translation: "جس کا اخلاق اچھا ہو وہ اپنے اخلاق سے روزہ دار اور قیام کرنے والے کے درجے کو پہنچ جاتا ہے۔", reference: "ابو داؤد: 4798" },
+    { category: "40 احادیث", arabic: "مَنْ سَأَلَ اللَّهَ الشَّهَادَةَ بِصِدْقٍ بَلَّغَهُ اللَّهُ مَنَازِلَ الشُّهَدَاءِ", translation: "جو شخص سچے دل سے اللہ سے شہادت مانگے، اللہ اسے شہداء کے مرتبے تک پہنچا دیتا ہے۔", reference: "صحیح مسلم: 1909" },
+    { category: "40 احادیث", arabic: "مَنْ صَلَّى الْعِشَاءَ فِي جَمَاعَةٍ فَكَأَنَّمَا قَامَ نِصْفَ اللَّيْلِ", translation: "جو شخص عشاء کی نماز جماعت سے پڑھے گویا اس نے آدھی رات قیام کیا۔", reference: "صحیح مسلم: 656" },
+    { category: "40 احادیث", arabic: "الدُّعَاءُ سِلَاحُ الْمُؤْمِنِ", translation: "دعا مومن کا ہتھیار ہے۔", reference: "المستدرک الحاکم" },
+    { category: "40 احادیث", arabic: "مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ", translation: "جو شخص علم کی تلاش میں کوئی راستہ اختیار کرتا ہے اللہ اس کے لیے جنت کا راستہ آسان کر دیتا ہے۔", reference: "صحیح مسلم: 2699" },
+    { category: "40 احادیث", arabic: "إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ", translation: "بے شک اللہ تمہاری صورتوں اور مالوں کو نہیں دیکھتا بلکہ تمہارے دلوں اور اعمال کو دیکھتا ہے۔", reference: "صحیح مسلم: 2564" },
+    { category: "40 احادیث", arabic: "الْمُؤْمِنُ مِرْآةُ الْمُؤْمِنِ", translation: "مومن مومن کا آئینہ ہے۔", reference: "ابو داؤد: 4918" },
+    { category: "40 احادیث", arabic: "مَنْ سَتَرَ مُسْلِمًا سَتَرَهُ اللَّهُ فِي الدُّنْيَا وَالآخِرَةِ", translation: "جو کسی مسلمان کی پردہ پوشی کرتا ہے، اللہ دنیا اور آخرت میں اس کی پردہ پوشی کرتا ہے۔", reference: "صحیح مسلم: 2699" },
+    { category: "40 احادیث", arabic: "إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ", translation: "سچائی نیکی کی طرف رہنمائی کرتی ہے اور نیکی جنت کی طرف رہنمائی کرتی ہے۔", reference: "صحیح بخاری: 6094" },
+    { category: "40 احادیث", arabic: "مَنْ قَرَأَ سُورَةَ الْكَهْفِ يَوْمَ الْجُمُعَةِ أَضَاءَ لَهُ مِنَ النُّورِ مَا بَيْنَ الْجُمُعَتَيْنِ", translation: "جو شخص جمعہ کے دن سورۃ الکہف پڑھے، اس کے لیے دو جمعوں کے درمیان نور روشن ہو جاتا ہے۔", reference: "المستدرک الحاکم" },
+    { category: "40 احادیث", arabic: "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", translation: "اللہ کے نزدیک سب سے پسندیدہ عمل وہ ہے جو ہمیشہ کیا جائے اگرچہ تھوڑا ہو۔", reference: "صحیح بخاری: 6464" },
+    { category: "40 احادیث", arabic: "مَنْ أَصْبَحَ مِنْكُمْ آمِنًا فِي سِرْبِهِ مُعَافًى فِي جَسَدِهِ عِنْدَهُ قُوتُ يَوْمِهِ فَكَأَنَّمَا حِيزَتْ لَهُ الدُّنْيَا", translation: "جو تم میں سے اس حال میں صبح کرے کہ وہ اپنے گھر میں امن سے ہو، جسمانی طور پر تندرست ہو اور اس کے پاس اس دن کی خوراک ہو تو گویا اس کے لیے پوری دنیا جمع کر دی گئی۔", reference: "ترمذی: 2346" },
 ];
+
 
 function loadDuaContent() {
     const categories = [...new Set(allContent.map(item => item.category))];
@@ -513,7 +588,7 @@ function closeAllModals() {
 }
 
 rateAppLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
-shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'कुरान पढ़ें, सुनें और AI असिस्टेंट "फराज" से इस्लामी सवाल पूछें। इस खूबसूरत ऐप को डाउनलोड करें!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
+shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'قرآن پڑھیں، سنیں اور AI اسسٹنٹ "فراز" سے اسلامی سوالات پوچھیں۔ یہ خوبصورت ایپ ڈاؤن لوڈ کریں!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
 
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -521,6 +596,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchSurahList();
     updateTarget();
     loadDuaContent();
+    displaySahabaStories(); // Call the function to display stories
+    
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             getPrayerTimes(position.coords.latitude, position.coords.longitude);
@@ -529,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prayerTimeLoader.textContent = "آپ کا براؤزر لوکیشن کو سپورٹ نہیں کرتا۔";
     }
     showRandomAyah();
-    setInterval(showRandomAyah, 600000);
+    setInterval(showRandomAyah, 600000); // 10 minutes
 });
 
 // Service Worker Registration

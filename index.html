@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>القرآن الكريم - Faraz AI</title>
     <meta name="theme-color" content="#161b22">
+    <!-- Yeh line manifest.json ko jodti hai (agar aap PWA bana rahe hain) -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="favicon.png" type="image/png">
+    
+    <!-- YEH LINE AAPKI CSS FILE KO JODTI HAI (DESIGN KE LIYE ZAROORI) -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Yeh lines Google se Fonts laati hain -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
@@ -15,8 +20,8 @@
 </head>
 <body>
 
+    <!-- Floating Menu Button and Side Menu -->
     <button id="menu-button" class="menu-button-floating"><span class="material-symbols-outlined">more_vert</span></button>
-
     <div id="side-menu" class="side-menu">
         <a href="#" id="rate-app-link">ہمیں ریٹنگ دیں</a>
         <a href="#" id="share-app-link">ایپ شیئر کریں</a>
@@ -25,25 +30,34 @@
     </div>
     <div id="menu-overlay" class="menu-overlay"></div>
 
+    <!-- Main Content Area Jahan Pages Dikhaye Jayenge -->
     <main class="main-content">
+        
+        <!-- Home Page (Ab sirf Sahaba ke waqiyat dikhayega) -->
         <div id="homeCustomPage" class="page active">
             <div class="home-screen-container">
-                <!-- Sahaba Stories Section -->
+                <!-- YEH WOH KHAALI BOX HAI JISMEIN JAVASCRIPT 20 WAQIYAT DAALEGA -->
                 <div id="sahaba-stories-container">
                     <!-- Waqiyat yahan script.js se load honge -->
                 </div>
             </div>
         </div>
+        
+        <!-- Quran Page -->
         <div id="quranPage" class="page">
             <div class="page-header"><h1>القرآن الكريم</h1></div>
             <ul id="surah-list"></ul>
         </div>
+        
+        <!-- Faraz AI Page -->
         <div id="aiPage" class="page">
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages"><div class="message ai-message">السلام علیکم! میں فراز ہوں، آپ کا اسلامی AI اسسٹنٹ۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</div></div>
                 <div class="chat-input-area"><input type="text" id="chat-input" placeholder="یہاں سوال لکھیں..."><button id="send-chat-button"><span class="material-symbols-outlined">send</span></button></div>
             </div>
         </div>
+        
+        <!-- Tasbih Page -->
         <div id="tasbihPage" class="page">
             <div class="tasbih-header"><select id="tasbih-select"></select></div>
             <div class="tasbih-container">
@@ -55,6 +69,8 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Dua/Azkar Page -->
         <div id="duaPage" class="page">
             <div class="page-header">
                 <h1>دعائیں اور اذکار</h1>
@@ -63,6 +79,8 @@
             <div id="dua-categories"></div>
             <div id="dua-list"></div>
         </div>
+        
+        <!-- Surah Detail Page (Jab kisi surah par click hoga) -->
         <div id="surahDetailPage" class="page">
              <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
              <header id="surahHeader" class="header"></header>
@@ -71,6 +89,7 @@
         </div>
     </main>
 
+    <!-- Neeche wala Navigation Bar -->
     <nav class="bottom-nav">
         <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
         <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
@@ -79,11 +98,12 @@
         <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
     </nav>
     
-    <!-- Modals -->
+    <!-- Modals (Pop-up windows) -->
     <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں</h2><div class="credits-section"><p><b>تمام مواد:</b> مستند اسلامی وسائل سے جمع کیا گیا۔</p></div></div></div>
     <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
     <!-- Story Modal will be created dynamically by JavaScript -->
 
+    <!-- YEH LINE AAPKI JAVASCRIPT FILE KO JODTI HAI (APP KI JAAN) -->
     <script src="script.js"></script>
 </body>
 </html>

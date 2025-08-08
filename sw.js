@@ -1,5 +1,5 @@
-// Service Worker Code
-const CACHE_NAME = 'quran-app-cache-v4'; // Version updated for new structure
+// Service Worker Code with Auto Version
+const CACHE_NAME = 'quran-app-cache-' + new Date().getTime(); // Auto version
 const urlsToCache = [
   '/',
   '/index.html',
@@ -9,6 +9,7 @@ const urlsToCache = [
   '/manifest.json'
 ];
 
+// Install: Cache essential files
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -16,36 +17,32 @@ self.addEventListener('install', event => {
         console.log('Opened cache and caching essential app shell files');
         return cache.addAll(urlsToCache);
       })
+      .then(() => self.skipWaiting()) // Force activate new version
   );
 });
 
+// Fetch: Serve from cache, fallback to network
 self.addEventListener('fetch', event => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/index.html');
-      })
+      fetch(event.request).catch(() => caches.match('/index.html'))
     );
   } else {
     event.respondWith(
       caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
+        .then(response => response || fetch(event.request))
     );
   }
 });
 
+// Activate: Delete old caches
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
+        cacheNames
+          .filter(name => name.startsWith('quran-app-cache-') && name !== CACHE_NAME)
+          .map(name => caches.delete(name))
       );
     })
   );

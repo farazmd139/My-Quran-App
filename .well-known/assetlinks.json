@@ -1,9 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.faraz.quranapp",
-    "sha256_cert_fingerprints":
-    ["4D:68:35:FA:75:C7:1D:34:99:2A:5C:70:02:A2:80:EA:F1:8D:33:5D:EE:5C:2E:4B:25:43:2E:E0:AE:28:FA:DC"]
-  }
-}]

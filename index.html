@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>القرآن الكريم - Faraz AI</title>
     <meta name="theme-color" content="#161b22">
-    <!-- Yeh line manifest.json ko jodti hai (agar aap PWA bana rahe hain) -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="favicon.png" type="image/png">
-    
-    <!-- YEH LINE AAPKI CSS FILE KO JODTI HAI (DESIGN KE LIYE ZAROORI) -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Yeh lines Google se Fonts laati hain -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
@@ -20,42 +15,35 @@
 </head>
 <body>
 
-    <!-- Floating Menu Button and Side Menu -->
     <button id="menu-button" class="menu-button-floating"><span class="material-symbols-outlined">more_vert</span></button>
+
     <div id="side-menu" class="side-menu">
+        <a href="#" id="rate-app-link">ہمیں ریٹنگ دیں</a>
+        <a href="#" id="share-app-link">ایپ شیئر کریں</a>
         <a href="#" onclick="openModal('credits-modal'); return false;">ہمارے بارے میں</a>
         <a href="https://telegra.ph/Privacy-Policy-for-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85---Faraz-AI-08-01" target="_blank">پرائیویسی پالیسی</a>
     </div>
     <div id="menu-overlay" class="menu-overlay"></div>
 
-    <!-- Main Content Area Jahan Pages Dikhaye Jayenge -->
     <main class="main-content">
-        
-        <!-- Home Page (Ab sirf Sahaba ke waqiyat dikhayega) -->
         <div id="homeCustomPage" class="page active">
             <div class="home-screen-container">
-                <!-- YEH WOH KHAALI BOX HAI JISMEIN JAVASCRIPT 20 WAQIYAT DAALEGA -->
+                <!-- Sahaba Stories Section -->
                 <div id="sahaba-stories-container">
                     <!-- Waqiyat yahan script.js se load honge -->
                 </div>
             </div>
         </div>
-        
-        <!-- Quran Page -->
         <div id="quranPage" class="page">
             <div class="page-header"><h1>القرآن الكريم</h1></div>
             <ul id="surah-list"></ul>
         </div>
-        
-        <!-- Faraz AI Page -->
         <div id="aiPage" class="page">
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages"><div class="message ai-message">السلام علیکم! میں فراز ہوں، آپ کا اسلامی AI اسسٹنٹ۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</div></div>
                 <div class="chat-input-area"><input type="text" id="chat-input" placeholder="یہاں سوال لکھیں..."><button id="send-chat-button"><span class="material-symbols-outlined">send</span></button></div>
             </div>
         </div>
-        
-        <!-- Tasbih Page -->
         <div id="tasbihPage" class="page">
             <div class="tasbih-header"><select id="tasbih-select"></select></div>
             <div class="tasbih-container">
@@ -67,8 +55,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Dua/Azkar Page -->
         <div id="duaPage" class="page">
             <div class="page-header">
                 <h1>دعائیں اور اذکار</h1>
@@ -77,8 +63,6 @@
             <div id="dua-categories"></div>
             <div id="dua-list"></div>
         </div>
-        
-        <!-- Surah Detail Page (Jab kisi surah par click hoga) -->
         <div id="surahDetailPage" class="page">
              <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
              <header id="surahHeader" class="header"></header>
@@ -87,7 +71,6 @@
         </div>
     </main>
 
-    <!-- Neeche wala Navigation Bar -->
     <nav class="bottom-nav">
         <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
         <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
@@ -96,37 +79,11 @@
         <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
     </nav>
     
-    <!-- Modals (Pop-up windows) -->
-    <div id="credits-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeAllModals()">&times;</span>
-            <h2>ہمارے بارے میں اور شکریہ</h2>
-            <p style="text-align: right; margin-bottom: 20px;">
-                یہ ایپ قرآن کی تعلیم کو آسان، جدید اور ہر ایک کے لیے قابلِ رسائی بنانے کے مقصد سے بنائی گئی ہے۔ यह پروجیکٹ دین کی خدمت میں ایک چھوٹی سی کوشش ہے۔
-            </p>
-            <div class="credits-section">
-                <p><b>قرآنی متن اور API:</b>
-                    <br>
-                    قرآن کا عربی متن، تراجم اور سورہ کی معلومات کے لئے ہم <a href="https://quran.com" target="_blank">Quran.com</a> کے انتہائی شکر گزار ہیں۔ ان کی شاندار API کے بغیر یہ ایپ ممکن نہیں تھی۔
-                </p>
-                <p><b>آڈیو تلاوت:</b>
-                    <br>
-                    اس ایپ میں دل کو چھو لینے والی تلاوت مشہور قاری <b>الشیخ مشاری بن راشد العفاسی</b> کی ہے۔ آڈیو فائلیں Quran.com API کے ذریعے حاصل کی گئی ہیں۔ ہم دعا گو ہیں کہ اللہ ان کے درجات بلند فرمائے۔
-                </p>
-                <p><b>AI اسسٹنٹ "فراز":</b>
-                    <br>
-                    اسلامی سوالات کے جوابات دینے اور رہنمائی فراہم کرنے کے لئے <b>Google's Gemini AI</b> ماڈل کا استعمال کیا گیا ہے۔ यह ٹیکنالوجی دینی علم کو سمجھنے کا ایک جدید ذریعہ فراہم کرتی ہے۔
-                </p>
-            </div>
-            <p style="text-align: center; margin-top: 30px; font-size: 0.9rem; opacity: 0.8;">
-                اس ایپ کا مقصد تعلیمی اور معلوماتی ہے۔ اگر آپ کو کوئی خامی نظر آئے تو براہِ کرم ہمیں ہمارے ای میل پر مطلع کریں۔
-            </p>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div id="credits-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>ہمارے بارے میں</h2><div class="credits-section"><p><b>تمام مواد:</b> مستند اسلامی وسائل سے جمع کیا گیا۔</p></div></div></div>
     <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
     <!-- Story Modal will be created dynamically by JavaScript -->
 
-    <!-- YEH LINE AAPKI JAVASCRIPT FILE KO JODTI HAI (APP KI JAAN) -->
     <script src="script.js"></script>
 </body>
 </html>

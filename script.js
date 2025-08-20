@@ -615,9 +615,6 @@ function closeAllModals() {
     }
 }
 
-rateAppLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://play.google.com/store/apps/details?id=com.faraz.quranapp', '_blank'); });
-shareAppLink.addEventListener('click', (e) => { e.preventDefault(); const shareData = { title: 'القرآن الكريم - Faraz AI', text: 'قرآن پڑھیں، سنیں اور AI اسسٹنٹ "فراز" سے اسلامی سوالات پوچھیں۔ یہ خوبصورت ایپ ڈاؤن لوڈ کریں!', url: 'https://play.google.com/store/apps/details?id=com.faraz.quranapp' }; if (navigator.share) { navigator.share(shareData).catch(console.error); } else { alert(shareData.text + "\n" + shareData.url); } });
-
 // --- Initial Load ---
 document.addEventListener('DOMContentLoaded', () => {
     showPage('homeCustomPage');

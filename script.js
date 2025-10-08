@@ -1,5 +1,5 @@
 // --- Global Variables & API Key ---
-const GEMINI_API_KEY = 'AIzaSyDB4TUj3zsU90jCfI8L0yivvWIYipUtq3c';
+const GEMINI_API_KEY = 'AIzaSyBzReLO6a1AYx2B471lNLHqU-Rd_C_umdQ';
 
 // --- DOM Elements ---
 const pages = document.querySelectorAll('.page');

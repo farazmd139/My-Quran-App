@@ -106,7 +106,7 @@ function displaySurahs(surahs) {
 
 async function loadSurah(surahId) {
     showPage('surahDetailPage');
-    surahHeader.innerHTML = '<h1>لوڈ ہو رہا ہے...</h1>';
+    surahHeader.innerHTML = '<h1>please wait...</h1>';
     surahContainer.innerHTML = '';
     
     try {
@@ -135,7 +135,7 @@ async function loadSurah(surahId) {
         });
 
     } catch (error) {
-        surahHeader.innerHTML = '<h1>سورہ لوڈ کرنے میں ناکامی</h1>';
+        surahHeader.innerHTML = '<h1>please check your internet </h1>';
     }
 }
 
